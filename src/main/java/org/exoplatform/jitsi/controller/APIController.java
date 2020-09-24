@@ -27,7 +27,7 @@ public class APIController {
   // Auth endpoint ( will be open in iframe from eXo for setting the token to local storage )
   @GetMapping("/userinfo/{inviteId}")
   public UserInfoResponse userinfo(HttpServletRequest request, @PathVariable("inviteId") String inviteId) {
-    UserInfo userInfo = new UserInfo("guest-" + inviteId, "James", "Guest");
+    UserInfo userInfo = new UserInfo("guest-" + inviteId, "Guest", inviteId);
     String token = request.getHeader(AUTH_TOKEN_HEADER);
     return new UserInfoResponse(userInfo, token);
   }
