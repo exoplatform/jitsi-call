@@ -2,28 +2,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.exoplatform.addons.jitsi</groupId>
-    <artifactId>jitsi-apps</artifactId>
-    <version>1.0.x-jitsi-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.3.4.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
   <groupId>org.exoplatform</groupId>
-  <artifactId>jitsi</artifactId>
-  <name>eXo Jitsi :: Apps :: Jitsi</name>
+  <artifactId>jitsi-call</artifactId>
+  <name>eXo Jitsi :: Call App :: Jitsi</name>
   <description>Jitsi Microservice</description>
+  <version>0.0.1-SNAPSHOT</version>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring-boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
+  <properties>
+    <!-- Defaut compiler settings -->
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
+    <!-- Maven Plugin for JS and CSS bundling and Unit Test execution -->
+    <com.github.eirslett.frontend.version>1.10.0</com.github.eirslett.frontend.version>
+    <node.version>v12.16.3</node.version>
+    <npm.version>6.14.5</npm.version>
+    <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>

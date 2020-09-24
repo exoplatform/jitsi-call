@@ -3,9 +3,11 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
   var MeetApp = function() {
 
     var callId;
-    var isStopped = false;
     var isStopping = false;
+    var isGuest = false;
     var authToken;
+    var isStopped = false;
+    var api;
     var getUrlParameter = function(sParam) {
       var sPageURL = window.location.search.substring(1),
         sURLVariables = sPageURL.split('&'),
@@ -69,16 +71,16 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
     };
 
     var beforeunloadListener = function() {
-      webconferencing.getCall(callId).then(function(call) {
-        webconferencing.updateCall(callId, "leaved");
-        // 1 to 1 call
-        if (call.participants.length == 2 && !isStopped) {
-          isStopping = true;
-          webConferencing.deleteCall(callId).done(function() {
-            log.info("Call deleted: " + callId);
-          })
+      if (!isStopped) {
+        isStopping = true;
+        var participants = api.getNumberOfParticipants();
+        participants = participants < 0 ? (participants * -1) : participants;
+        if (participants == 2) {
+          webconferencing.updateCall(callId, "stopped");
+          webconferencing.deleteCall(callId);
         }
-      });
+      }
+     
     };
 
     var getCallId = function() {
@@ -98,11 +100,8 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
           var callId = update.callId;
           if (update.eventType == "call_state") {
             if (update.callState == "stopped" && !isStopping) {
-              alert("Call stopped remotely. Closing window in 5 seconds");
               isStopped = true;
-              setTimeout(function() {
-                window.close();
-              }, 5000);
+              $('body').html('<h2 style="margin:50px">Call has been stopped</h2>');
             }
           }
         } // it's other provider type - skip it
@@ -127,15 +126,25 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
             interfaceConfigOverwrite: {
               TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'fullscreen',
                 'fodeviceselection', 'hangup', 'profile', 'sharedvideo', 'settings',
-                'videoquality', 'tileview', 'videobackgroundblur', 'mute-everyone', 'security'
+                'videoquality', 'tileview', 'videobackgroundblur', 'mute-everyone'
               ]
             }
           };
-          var api = new JitsiMeetExternalAPI(domain, options);
+          api = new JitsiMeetExternalAPI(domain, options);
           webconferencing.updateCall(callId, "joined");
           console.log("Joined to the call " + callId);
           subscribeCall(userinfo.id);
           webconferencing.toCallUpdate(callId, {action : "started"});
+          api.on('readyToClose', () => {
+            var participants = api.getNumberOfParticipants();
+            participants = participants < 0 ? (participants * -1) : participants;
+              if (participants <= 1) {
+                webconferencing.updateCall(callId, "stopped");
+                webconferencing.deleteCall(callId);
+              }
+              isStopped = true;
+            $('body').html('<h2 style="margin:50px">Call has been stopped.</h2>');
+           });
       });
       
     };
@@ -146,7 +155,6 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
      */
     this.init = function() {
         callId = getCallId();
-        var isGuest = false;
         var $initUser = $.Deferred();
         var inviteId = getUrlParameter("inviteId");
         if (inviteId) {
