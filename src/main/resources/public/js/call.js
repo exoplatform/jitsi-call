@@ -60,13 +60,10 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
     };
     
     // Request provider settings
-    var getToken = function(username) {
+    var getJitsiToken = function(username) {
       return $.get({
         type: "GET",
-        beforeSend: function(request) {
-          request.setRequestHeader("X-Exoplatform-Auth", authToken);
-        },
-        url: "/portal/rest/jitsi/token/" + username,
+        url: "/jitsi/api/token/" + username,
       });
     };
 
@@ -143,7 +140,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
                 webconferencing.deleteCall(callId);
               }
               isStopped = true;
-            $('body').html('<h2 style="margin:50px">Call has been stopped.</h2>');
+              $('body').html('<h2 style="margin:50px">Call has been stopped.</h2>');
            });
           
           api.addEventListener('participantLeft', function(event) {
