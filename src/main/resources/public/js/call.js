@@ -75,7 +75,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
         isStopping = true;
         var participants = api.getNumberOfParticipants();
         participants = participants < 0 ? (participants * -1) : participants;
-        if (participants == 2) {
+        if (participants <= 2) {
           webconferencing.updateCall(callId, "stopped");
           webconferencing.deleteCall(callId);
         }
@@ -145,6 +145,14 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
               isStopped = true;
             $('body').html('<h2 style="margin:50px">Call has been stopped.</h2>');
            });
+          
+          api.addEventListener('participantLeft', function(event) {
+            var participants = api.getNumberOfParticipants();
+            participants = participants < 0 ? (participants * -1) : participants;
+            if (participants == 1) {
+              $('body').html('<h2 style="margin:50px">Call has been stopped.</h2>');
+            }
+          });
       });
       
     };
