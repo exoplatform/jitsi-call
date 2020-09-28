@@ -1,18 +1,15 @@
 package org.exoplatform.jitsi;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 /**
  * The Class TokenService.
@@ -37,20 +34,17 @@ public class TokenService {
    * @throws JWTCreationException 
    * @throws IllegalArgumentException 
    */
-  public String createToken(String username) throws IllegalArgumentException, JWTCreationException, JsonProcessingException {
-    Context context = new Context(new User(username));
-    Map<String, Object> headers = new HashMap<>();
-    headers.put("typ", "JWT");
-    String token = JWT.create()
-                      .withHeader(headers)
-                      .withExpiresAt(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(10)))
-                      .withSubject("*")
-                      .withIssuer(appId)
-                      .withAudience(appId)
-                      .withClaim("context", new ObjectMapper().writeValueAsString(context))
-                      .withClaim("room", "*")
-                      .sign(Algorithm.HMAC256(secret));
-    return token;
+  public String createToken(String username) {
+    return Jwts.builder()
+               .setHeaderParam("typ", "JWT")
+               .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(10)))
+               .setSubject("*")
+               .setIssuer(appId)
+               .setAudience(appId)
+               .claim("context", new Context(new User(username)))
+               .claim("room", "*")
+               .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+               .compact();
   }
 
   /**

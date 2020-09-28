@@ -113,7 +113,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
       const domain = apiUrl.substring(apiUrl.indexOf("://") + 3, apiUrl.lastIndexOf("/external_api.js"));
       var windowHeight = window.innerHeight - 20;
       var name = userinfo.firstName + " " + userinfo.lastName;
-      getToken(name).then(function(token){
+      getJitsiToken(name).then(function(token){
         const options = {
             roomName: "Jitsi Exo Meet",
             width: '100%',
