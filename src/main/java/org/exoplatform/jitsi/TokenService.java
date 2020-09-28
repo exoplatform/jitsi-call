@@ -6,8 +6,6 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -30,9 +28,6 @@ public class TokenService {
    *
    * @param username the username
    * @return the string
-   * @throws JsonProcessingException 
-   * @throws JWTCreationException 
-   * @throws IllegalArgumentException 
    */
   public String createToken(String username) {
     return Jwts.builder()
