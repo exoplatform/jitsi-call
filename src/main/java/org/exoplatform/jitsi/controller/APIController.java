@@ -23,20 +23,23 @@ import org.exoplatform.jitsi.TokenService;
 @RequestMapping("api")
 public class APIController {
 
+  /** The log. */
   private Logger              log               = LoggerFactory.getLogger(this.getClass());
 
+  /** The token service. */
   @Autowired
   private TokenService        tokenService;
 
+  /** The Constant AUTH_TOKEN_HEADER. */
   private final static String AUTH_TOKEN_HEADER = "X-Exoplatform-External-Auth";
 
   /**
    * Userinfo.
    *
+   * @param request the request
    * @param inviteId the invite id
-   * @return the map
+   * @return the user info response
    */
-  // Auth endpoint ( will be open in iframe from eXo for setting the token to local storage )
   @GetMapping("/userinfo/{inviteId}")
   public UserInfoResponse userinfo(HttpServletRequest request, @PathVariable("inviteId") String inviteId) {
     UserInfo userInfo = new UserInfo("guest-" + inviteId, "Guest", inviteId);
@@ -44,6 +47,12 @@ public class APIController {
     return new UserInfoResponse(userInfo, token);
   }
 
+  /**
+   * Token.
+   *
+   * @param username the username
+   * @return the response entity
+   */
   @GetMapping("/token/{username}")
   public ResponseEntity<String> token(@PathVariable("username") String username) {
     try {
