@@ -10,18 +10,21 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 /**
  * The Class TokenAuthenticationFilter.
  */
 public class TokenAuthenticationFilter implements Filter {
+
+  private Logger              log               = LoggerFactory.getLogger(this.getClass());
 
   /** The secret. */
   private String              secret;
@@ -76,15 +79,13 @@ public class TokenAuthenticationFilter implements Filter {
    */
   private boolean verifyToken(String token) {
     try {
-      Algorithm algorithm = Algorithm.HMAC384(secret.getBytes());
-      JWTVerifier verifier = JWT.require(algorithm).withSubject("exo-webconf").build(); // Reusable verifier instance
-      DecodedJWT jwt = verifier.verify(token);
-      String action = jwt.getClaim("action").asString();
+      Jws<Claims> jws = Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).parseClaimsJws(token);
+      String action = String.valueOf(jws.getBody().get("action"));
       if ("external_auth".equals(action)) {
         return true;
       }
-    } catch (JWTVerificationException exception) {
-      System.out.println("Cannot verify token: " + exception.getMessage());
+    } catch (Exception e) {
+      log.warn("Cannot verify token {}", e.getMessage());
     }
     return false;
   }

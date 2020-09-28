@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-    <parent>
+  <parent>
     <artifactId>addons-parent-pom</artifactId>
     <groupId>org.exoplatform.addons</groupId>
     <version>12</version>
@@ -22,9 +22,10 @@
     <com.github.eirslett.frontend.version>1.10.0</com.github.eirslett.frontend.version>
     <node.version>v12.16.3</node.version>
     <npm.version>6.14.5</npm.version>
+    <io.jsonwebtoken.version>0.10.5</io.jsonwebtoken.version>
     <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
   </properties>
-  
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -36,7 +37,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -47,9 +48,19 @@
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.auth0</groupId>
-      <artifactId>java-jwt</artifactId>
-      <version>3.10.3</version>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-api</artifactId>
+      <version>${io.jsonwebtoken.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-impl</artifactId>
+      <version>${io.jsonwebtoken.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-jackson</artifactId>
+      <version>${io.jsonwebtoken.version}</version>
     </dependency>
 
     <dependency>
