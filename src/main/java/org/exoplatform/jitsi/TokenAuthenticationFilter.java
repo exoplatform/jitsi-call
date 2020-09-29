@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package org.exoplatform.jitsi;
 
 import java.io.IOException;
@@ -24,13 +27,17 @@ import io.jsonwebtoken.security.Keys;
  */
 public class TokenAuthenticationFilter implements Filter {
 
-  private Logger              log               = LoggerFactory.getLogger(this.getClass());
-
-  /** The secret. */
-  private String              secret;
+  /** The Constant log. */
+  private static final Logger log               = LoggerFactory.getLogger(TokenAuthenticationFilter.class);
 
   /** The Constant AUTH_TOKEN_HEADER. */
   private final static String AUTH_TOKEN_HEADER = "X-Exoplatform-External-Auth";
+
+  /** The Constant EXTERNAL_AUTH. */
+  private static final String EXTERNAL_AUTH     = "external_auth";
+
+  /** The secret. */
+  private String              secret;
 
   /**
    * Instantiates a new token authentication filter.
@@ -60,14 +67,10 @@ public class TokenAuthenticationFilter implements Filter {
       if (verifyToken(authToken)) {
         chain.doFilter(request, response);
       } else {
-        res.setStatus(HttpStatus.UNAUTHORIZED.value());
-        res.getWriter().write("{\"error\":\"The auth token is not valid\"}");
-        res.flushBuffer();
+        res.sendError(HttpStatus.UNAUTHORIZED.value(), "The auth token is not valid");
       }
     } else {
-      res.setStatus(HttpStatus.UNAUTHORIZED.value());
-      res.getWriter().write("{\"error\":\"The auth token is not provided\"}");
-      res.flushBuffer();
+      res.sendError(HttpStatus.UNAUTHORIZED.value(), "The auth token is not provided");
     }
   }
 
@@ -81,11 +84,11 @@ public class TokenAuthenticationFilter implements Filter {
     try {
       Jws<Claims> jws = Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).parseClaimsJws(token);
       String action = String.valueOf(jws.getBody().get("action"));
-      if ("external_auth".equals(action)) {
+      if (EXTERNAL_AUTH.equals(action)) {
         return true;
       }
     } catch (Exception e) {
-      log.warn("Cannot verify token {}", e.getMessage());
+      log.warn("Cannot verify token {} : {}", token, e.getMessage());
     }
     return false;
   }
