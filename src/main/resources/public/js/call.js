@@ -77,6 +77,9 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
           webconferencing.deleteCall(callId);
         }
       }
+      if (api) {
+        api.dispose();
+      }
      
     };
 
@@ -113,8 +116,10 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
       const domain = apiUrl.substring(apiUrl.indexOf("://") + 3, apiUrl.lastIndexOf("/external_api.js"));
       var windowHeight = window.innerHeight - 20;
       var name = userinfo.firstName + " " + userinfo.lastName;
-      getJitsiToken(name).then(function(token){
-        var room = "Meet " + callId.substring(2, callId.length);
+      getJitsiToken(name).then(function(token){        
+        var room = "Meet";
+        var callParticipants = callId.substring(2, callId.length).split("-");
+        callParticipants.forEach(function(elem){ room+=elem.replace(/^./, elem[0].toUpperCase()); });
         const options = {
             roomName: room,
             width: '100%',
@@ -133,7 +138,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
           console.log("Joined to the call " + callId);
           subscribeCall(userinfo.id);
           webconferencing.toCallUpdate(callId, {action : "started"});
-          api.on('readyToClose', () => {
+          api.on('readyToClose', function(event) {
             var participants = api.getNumberOfParticipants();
             participants = participants < 0 ? (participants * -1) : participants;
               if (participants <= 1) {
@@ -144,13 +149,6 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
               $('body').html('<h2 style="margin:50px">Call has been stopped.</h2>');
            });
           
-          api.addEventListener('participantLeft', function(event) {
-            var participants = api.getNumberOfParticipants();
-            participants = participants < 0 ? (participants * -1) : participants;
-            if (participants == 1) {
-              $('body').html('<h2 style="margin:50px">Call has been stopped.</h2>');
-            }
-          });
       });
       
     };
