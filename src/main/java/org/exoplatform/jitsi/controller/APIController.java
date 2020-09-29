@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import org.exoplatform.jitsi.TokenService;
 
 /**
@@ -42,6 +40,9 @@ public class APIController {
    */
   @GetMapping("/userinfo/{inviteId}")
   public UserInfoResponse userinfo(HttpServletRequest request, @PathVariable("inviteId") String inviteId) {
+    if (log.isDebugEnabled()) {
+      log.debug("Handled userinfo request with inviteId {}", inviteId);
+    }
     UserInfo userInfo = new UserInfo("guest-" + inviteId, "Guest", inviteId);
     String token = request.getHeader(AUTH_TOKEN_HEADER);
     return new UserInfoResponse(userInfo, token);
@@ -55,6 +56,9 @@ public class APIController {
    */
   @GetMapping("/token/{username}")
   public ResponseEntity<String> token(@PathVariable("username") String username) {
+    if (log.isDebugEnabled()) {
+      log.debug("Handled token request with username {}", username);
+    }
     try {
       return ResponseEntity.ok(tokenService.createToken(username));
     } catch (Exception e) {

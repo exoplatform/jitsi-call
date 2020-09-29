@@ -1,19 +1,58 @@
 package org.exoplatform.jitsi.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * The Class StatusController.
+ */
 @RestController
 public class StatusController {
 
+  /** The log. */
+  private Logger log = LoggerFactory.getLogger(this.getClass());
+
+  /**
+   * Status.
+   *
+   * @return the response entity
+   */
   @GetMapping("/")
-  public Map<String, String> status() {
-    HashMap<String, String> map = new HashMap<>();
-    map.put("status", "active");
-    return map;
+  public ResponseEntity<StatusResponse> status() {
+    if (log.isDebugEnabled()) {
+      log.debug("Handled status request: active");
+    }
+    return ResponseEntity.ok(new StatusResponse("active"));
   }
 
+  /**
+   * The Class StatusResponse.
+   */
+  class StatusResponse {
+
+    /** The status. */
+    private final String status;
+
+    /**
+     * Instantiates a new status response.
+     *
+     * @param status the status
+     */
+    public StatusResponse(String status) {
+      this.status = status;
+    }
+
+    /**
+     * Gets the status.
+     *
+     * @return the status
+     */
+    public String getStatus() {
+      return status;
+    }
+
+  }
 }
