@@ -70,12 +70,7 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
     var beforeunloadListener = function() {
       if (!isStopped) {
         isStopping = true;
-        var participants = api.getNumberOfParticipants();
-        participants = participants < 0 ? (participants * -1) : participants;
-        if (participants <= 2) {
-          webconferencing.updateCall(callId, "stopped");
-          webconferencing.deleteCall(callId);
-        }
+        webconferencing.updateCall(callId, 'leaved');
       }
       if (api) {
         api.dispose();
@@ -138,13 +133,9 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
           console.log("Joined to the call " + callId);
           subscribeCall(userinfo.id);
           webconferencing.toCallUpdate(callId, {action : "started"});
+          
           api.on('readyToClose', function(event) {
-            var participants = api.getNumberOfParticipants();
-            participants = participants < 0 ? (participants * -1) : participants;
-              if (participants <= 1) {
-                webconferencing.updateCall(callId, "stopped");
-                webconferencing.deleteCall(callId);
-              }
+            webconferencing.updateUserCall(callId, 'leaved');
               isStopped = true;
               $('body').html('<h2 style="margin:50px">Call has been stopped.</h2>');
            });
