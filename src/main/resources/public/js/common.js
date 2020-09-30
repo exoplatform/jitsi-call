@@ -12,24 +12,4 @@ var require = {
   }
 };
 
-if (!window.eXo) {
-  window.eXo = {
-    core : {},
-    define : {},
-    env : {
-      portal : {},
-      client : {},
-      server : {}
-    },
 
-    portal : {},
-
-    webui : {},
-
-    gadget : {},
-
-    session : {},
-
-    i18n : {}
-  };
-}

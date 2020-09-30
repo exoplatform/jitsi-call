@@ -1,4 +1,4 @@
-require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jitsi"], function(jquery, webconferencing, provider) {
+require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jitsi"], function(bootstrap, $, webconferencing, provider) {
 
   var MeetApp = function() {
 
