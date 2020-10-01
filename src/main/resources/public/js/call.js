@@ -109,7 +109,6 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
       console.log("Init call with userInfo: " + JSON.stringify(userinfo));
       var apiUrl = document.getElementById("jitsi-api").getAttribute("src");
       const domain = apiUrl.substring(apiUrl.indexOf("://") + 3, apiUrl.lastIndexOf("/external_api.js"));
-      var windowHeight = window.innerHeight - 20;
       var name = userinfo.firstName + " " + userinfo.lastName;
       getJitsiToken(name).then(function(token){        
         var room = "Meet";
@@ -119,7 +118,7 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
             roomName: room,
             width: '100%',
             jwt : token,
-            height: windowHeight,
+            height: window.innerHeight,
             parentNode: document.querySelector("#meet"),
             interfaceConfigOverwrite: {
               TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'fullscreen',
@@ -185,9 +184,16 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
               webconferencing.getCall(callId).then(function(call) {
                 // Check if user allowed
                 if (!isGuest) {
-                  var user = call.participants.filter(function(participant) {
-                    return participant.id === userinfo.id;
-                  });
+                  var user = [];
+                  if (call.owner.group) {
+                    user = Object.keys(call.owner.members).filter(function(id) {
+                      return id === userinfo.id;
+                    });
+                  } else {
+                    user = call.participants.filter(function(participant) {
+                      return participant.id === userinfo.id;
+                    });
+                  }
                   if (user.length == 0) {
                     alert("User is not allowed for this call");
                     return;
