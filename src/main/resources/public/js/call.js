@@ -131,12 +131,10 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
           webconferencing.updateCall(callId, "joined");
           console.log("Joined to the call " + callId);
           subscribeCall(userinfo.id);
-          webconferencing.toCallUpdate(callId, {action : "started"});
-          
-          api.on('readyToClose', function(event) {
-            webconferencing.updateUserCall(callId, 'leaved');
+          api.on("readyToClose", function(event) {
+            webconferencing.updateCall(callId, "leaved");
               isStopped = true;
-              $('body').html('<h2 style="margin:50px">Call has been stopped.</h2>');
+              $("body").html('<h2 style="margin:50px">You have left the call.</h2>');
            });
           
       });
