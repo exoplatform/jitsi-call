@@ -165,8 +165,9 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
             $initUser.resolve(data.userInfo, data.authToken);
           }).catch(function(err) {
             console.log("Cannot get exo user info: " + JSON.stringify(err));
-            $initUser.fail(err);
-            // TODO: redirect to login page if the satus code is 401 or 403?
+            //$initUser.fail(err);
+            // redirect to login page
+            window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId
           });
         }
 
