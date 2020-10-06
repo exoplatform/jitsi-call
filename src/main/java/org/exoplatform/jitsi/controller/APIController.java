@@ -18,7 +18,7 @@ import org.exoplatform.jitsi.TokenService;
  * The Class APIController.
  */
 @RestController
-@RequestMapping("api")
+@RequestMapping("api/v1")
 public class APIController {
 
   /** The log. */

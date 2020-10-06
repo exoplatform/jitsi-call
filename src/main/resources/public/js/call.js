@@ -33,7 +33,7 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
     var getGuestUserInfo = function(inviteId) {
       return $.get({
         type: "GET",
-        url: "/jitsi/api/userinfo/" + inviteId,
+        url: "/jitsi/api/v1/userinfo/" + inviteId,
       });
     };
 
@@ -63,7 +63,7 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
     var getJitsiToken = function(username) {
       return $.get({
         type: "GET",
-        url: "/jitsi/api/token/" + username,
+        url: "/jitsi/api/v1/token/" + username,
       });
     };
 
