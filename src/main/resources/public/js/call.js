@@ -122,8 +122,8 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
             parentNode: document.querySelector("#meet"),
             interfaceConfigOverwrite: {
               TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'fullscreen',
-                'fodeviceselection', 'hangup', 'profile', 'sharedvideo', 'settings',
-                'videoquality', 'tileview', 'videobackgroundblur', 'mute-everyone'
+                'recording', 'fodeviceselection', 'hangup', 'profile', 'sharedvideo',
+                'settings', 'videoquality', 'tileview', 'videobackgroundblur', 'mute-everyone'
               ]
             }
           };
