@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package org.exoplatform.jitsi.controller;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,9 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.exoplatform.jitsi.CallInfo;
+import org.exoplatform.jitsi.CallService;
 import org.exoplatform.jitsi.TokenService;
 
 /**
@@ -22,14 +29,18 @@ import org.exoplatform.jitsi.TokenService;
 public class APIController {
 
   /** The log. */
-  private Logger              log               = LoggerFactory.getLogger(this.getClass());
+  private final static Logger log               = LoggerFactory.getLogger(APIController.class);
+
+  /** The Constant AUTH_TOKEN_HEADER. */
+  private final static String AUTH_TOKEN_HEADER = "X-Exoplatform-External-Auth";
 
   /** The token service. */
   @Autowired
   private TokenService        tokenService;
 
-  /** The Constant AUTH_TOKEN_HEADER. */
-  private final static String AUTH_TOKEN_HEADER = "X-Exoplatform-External-Auth";
+  /** The call service. */
+  @Autowired
+  private CallService         callService;
 
   /**
    * Userinfo.
@@ -49,7 +60,7 @@ public class APIController {
   }
 
   /**
-   * Token.
+   * Get JWT token for Jitsi Meet.
    *
    * @param username the username
    * @return the response entity
@@ -68,9 +79,29 @@ public class APIController {
   }
 
   /**
+   * Save call info.
+   *
+   * @param request the request
+   * @param callId the call id
+   * @param callInfo the call info
+   * @return the response entity
+   */
+  @PostMapping("/calls/{callId}")
+  public ResponseEntity<String> saveCallInfo(HttpServletRequest request,
+                                             @PathVariable("callId") String callId,
+                                             @RequestBody CallInfo callInfo) {
+    if (log.isDebugEnabled()) {
+      log.debug("Handled saveCallInfo request with callId {}", callId);
+    }
+    callService.saveCallInfo(callId, callInfo);
+    return ResponseEntity.ok().build();
+  }
+
+
+  /**
    * The Class UserInfoResponse.
    */
-  public class UserInfoResponse {
+  public static class UserInfoResponse {
 
     /** The user info. */
     private final UserInfo userInfo;
@@ -113,7 +144,7 @@ public class APIController {
   /**
    * The Class UserInfo.
    */
-  public class UserInfo {
+  public static class UserInfo {
 
     /** The id. */
     private final String id;

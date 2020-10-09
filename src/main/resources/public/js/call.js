@@ -36,6 +36,17 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
         url: "/jitsi/api/v1/userinfo/" + inviteId,
       });
     };
+    
+    // Save call info via Gateway
+    // TODO: Secure
+    var saveCallInfo = function(callId, callInfo) {
+      return $.post({
+        url: "/jitsi/api/v1/calls/" + callId,
+        data : JSON.stringify(callInfo),
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+      });
+    };
 
     // Request contextinfo
     var getContextInfo = function(userId) {
@@ -105,7 +116,7 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
       });
     };
 
-    var initCall = function(userinfo) {
+    var initCall = function(userinfo, call) {
       console.log("Init call with userInfo: " + JSON.stringify(userinfo));
       var apiUrl = document.getElementById("jitsi-api").getAttribute("src");
       const domain = apiUrl.substring(apiUrl.indexOf("://") + 3, apiUrl.lastIndexOf("/external_api.js"));
@@ -115,14 +126,15 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
         var callParticipants = callId.substring(2, callId.length).split("-");
         callParticipants.forEach(function(elem){ room+=elem.replace(/^./, elem[0].toUpperCase()); });
         const options = {
-            roomName: room,
+            roomName: callId,
             width: '100%',
             jwt : token,
             height: window.innerHeight,
             parentNode: document.querySelector("#meet"),
+            configOverwrite: { subject: room },
             interfaceConfigOverwrite: {
               TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'fullscreen',
-                'recording', 'fodeviceselection', 'hangup', 'profile', 'sharedvideo',
+                'recording', 'fodeviceselection', 'hangup', 'profile', 'sharedvideo', 
                 'settings', 'videoquality', 'tileview', 'videobackgroundblur', 'mute-everyone'
               ]
             }
@@ -137,6 +149,17 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
               $("body").html('<h2 style="margin:50px">You have left the call.</h2>');
            });
           
+          api.addEventListener('participantRoleChanged', function(event) {
+            
+           if (event.role === "moderator") {
+             saveCallInfo(callId, {
+               owner: call.owner.id,
+               group: call.owner.group,
+               moderator: userinfo.id
+             })
+            }
+          });
+
       });
       
     };
@@ -165,7 +188,7 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
             $initUser.resolve(data.userInfo, data.authToken);
           }).catch(function(err) {
             console.log("Cannot get exo user info: " + JSON.stringify(err));
-            //$initUser.fail(err);
+            // $initUser.fail(err);
             // redirect to login page
             window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId
           });
@@ -198,7 +221,7 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
                     return;
                   }
                 }
-                initCall(userinfo);
+                initCall(userinfo, call);
               }).catch(function(err) {
                 console.log("Cannot init call:" + JSON.stringify(err));
                 alert("Error occured while initializing the call.");
