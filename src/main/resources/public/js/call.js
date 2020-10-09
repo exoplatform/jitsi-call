@@ -122,16 +122,17 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
       const domain = apiUrl.substring(apiUrl.indexOf("://") + 3, apiUrl.lastIndexOf("/external_api.js"));
       var name = userinfo.firstName + " " + userinfo.lastName;
       getJitsiToken(name).then(function(token){        
-        var room = "Meet";
+        // TODO: create subj from pretty names
+        var subj = "Meet ";
         var callParticipants = callId.substring(2, callId.length).split("-");
-        callParticipants.forEach(function(elem){ room+=elem.replace(/^./, elem[0].toUpperCase()); });
+        callParticipants.forEach(function(elem){ subj += elem.replace(/^./, elem[0].toUpperCase()) + " "; });
         const options = {
             roomName: callId,
             width: '100%',
             jwt : token,
             height: window.innerHeight,
             parentNode: document.querySelector("#meet"),
-            configOverwrite: { subject: room },
+            configOverwrite: { subject: subj },
             interfaceConfigOverwrite: {
               TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'fullscreen',
                 'recording', 'fodeviceselection', 'hangup', 'profile', 'sharedvideo', 
