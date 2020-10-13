@@ -24,7 +24,6 @@ public class CallInfo {
   /**
    * Instantiates a new call info.
    *
-   * @param id the id
    * @param owner the owner
    * @param group the group
    * @param moderator the moderator
@@ -89,6 +88,11 @@ public class CallInfo {
     this.moderator = moderator;
   }
 
+  /**
+   * To string.
+   *
+   * @return the string
+   */
   @Override
   public String toString() {
     return "CallInfo [owner=" + owner + ", group=" + group + ", moderator=" + moderator + "]";
