@@ -26,14 +26,14 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
     var getExoUserInfo = function() {
       return $.get({
         type: "GET",
-        url: "/jitsi/portal/rest/jitsi/userinfo",
+        url: "/jitsi/portal/rest/jitsi/userinfo"
       });
     };
     // Request userinfo of guest via Gateway
     var getGuestUserInfo = function(inviteId) {
       return $.get({
         type: "GET",
-        url: "/jitsi/api/v1/userinfo/" + inviteId,
+        url: "/jitsi/api/v1/userinfo/" + inviteId
       });
     };
     
@@ -55,7 +55,7 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
         beforeSend: function(request) {
           request.setRequestHeader("X-Exoplatform-Auth", authToken);
         },
-        url: "/portal/rest/jitsi/context/" + userId,
+        url: "/portal/rest/jitsi/context/" + userId
       });
     };
 
@@ -66,7 +66,7 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
         beforeSend: function(request) {
           request.setRequestHeader("X-Exoplatform-Auth", authToken);
         },
-        url: "/portal/rest/jitsi/settings",
+        url: "/portal/rest/jitsi/settings"
       });
     };
     
@@ -74,7 +74,7 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
     var getJitsiToken = function(username) {
       return $.get({
         type: "GET",
-        url: "/jitsi/api/v1/token/" + username,
+        url: "/jitsi/api/v1/token/" + username
       });
     };
 
@@ -126,18 +126,25 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
         var subj = "Meet ";
         var callParticipants = callId.substring(2, callId.length).split("-");
         callParticipants.forEach(function(elem){ subj += elem.replace(/^./, elem[0].toUpperCase()) + " "; });
+        var displayName = userinfo.firstName + " " + userinfo.lastName;
         const options = {
             roomName: callId,
             width: '100%',
             jwt : token,
             height: window.innerHeight,
             parentNode: document.querySelector("#meet"),
-            configOverwrite: { subject: subj },
+            configOverwrite: { 
+              subject: subj, 
+              prejoinPageEnabled: true
+            },
             interfaceConfigOverwrite: {
-              TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'fullscreen',
-                'recording', 'fodeviceselection', 'hangup', 'profile', 'sharedvideo', 
+              TOOLBAR_BUTTONS: ['microphone', 'chat', 'camera', 'desktop', 'fullscreen',
+                'fodeviceselection', 'hangup', 'profile', 'sharedvideo', 
                 'settings', 'videoquality', 'tileview', 'videobackgroundblur', 'mute-everyone'
               ]
+            },
+            userInfo: {
+              displayName : displayName
             }
           };
           api = new JitsiMeetExternalAPI(domain, options);
@@ -151,16 +158,17 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
            });
           
           api.addEventListener('participantRoleChanged', function(event) {
-            
-           if (event.role === "moderator") {
+            api.executeCommand('displayName', displayName);
+            // For recording feature
+            /*if (event.role === "moderator") {
              saveCallInfo(callId, {
                owner: call.owner.id,
                group: call.owner.group,
                moderator: userinfo.id
-             })
-            }
+             });
+            }*/
           });
-
+          
       });
       
     };
