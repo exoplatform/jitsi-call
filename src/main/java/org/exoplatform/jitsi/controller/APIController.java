@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +43,7 @@ public class APIController {
   @Autowired
   private CallService         callService;
 
+
   /**
    * Userinfo.
    *
@@ -71,7 +73,7 @@ public class APIController {
       log.debug("Handled token request with username {}", username);
     }
     try {
-      return ResponseEntity.ok(tokenService.createToken(username));
+      return ResponseEntity.ok(tokenService.createJitsiToken(username));
     } catch (Exception e) {
       log.error("Cannot generate token: {}", e.getMessage());
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -97,6 +99,21 @@ public class APIController {
     return ResponseEntity.ok().build();
   }
 
+  /**
+   * Save call info.
+   *
+   * @param request the request
+   * @param callId the call id
+   * @param callInfo the call info
+   * @return the response entity
+   */
+  @GetMapping("/calls/{callId}/uploadLink")
+  public String uploadLink(@PathVariable("callId") String callId) {
+    if (log.isDebugEnabled()) {
+      log.debug("Handled uploadLink request with callId {}", callId);
+    }
+    return callService.getUploadLink(callId);
+  }
 
   /**
    * The Class UserInfoResponse.

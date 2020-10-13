@@ -29,7 +29,7 @@ public class TokenService {
    * @param username the username
    * @return the string
    */
-  public String createToken(String username) {
+  public String createJitsiToken(String username) {
     return Jwts.builder()
                .setHeaderParam("typ", "JWT")
                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(10)))
