@@ -102,9 +102,7 @@ public class APIController {
   /**
    * Save call info.
    *
-   * @param request the request
    * @param callId the call id
-   * @param callInfo the call info
    * @return the response entity
    */
   @GetMapping("/calls/{callId}/uploadLink")

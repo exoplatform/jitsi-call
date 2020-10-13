@@ -21,9 +21,11 @@ public class CallService {
   /** The log. */
   private final static Logger       log   = LoggerFactory.getLogger(CallService.class);
 
+  /** The recordings url. */
   @Value("${exo.recordings.url}")
   private String                    recordingsUrl;
 
+  /** The exo secret. */
   @Value("${exo.jwt.secret}")
   private String                    exoSecret;
 
@@ -51,6 +53,12 @@ public class CallService {
   }
 
 
+  /**
+   * Gets the upload link.
+   *
+   * @param callId the call id
+   * @return the upload link
+   */
   public String getUploadLink(String callId) {
     CallInfo callInfo = getCallInfo(callId);
     if (callInfo != null) {

@@ -6,16 +6,30 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
+/**
+ * The Class JitsiApplication.
+ */
 @SpringBootApplication
 public class JitsiApplication {
 
+  /** The secret. */
   @Value("${exo.jwt.secret}")
   private String secret;
 
+  /**
+   * The main method.
+   *
+   * @param args the arguments
+   */
   public static void main(String[] args) {
     SpringApplication.run(JitsiApplication.class, args);
   }
 
+  /**
+   * Token auth filter.
+   *
+   * @return the filter registration bean
+   */
   @Bean
   public FilterRegistrationBean<TokenAuthenticationFilter> tokenAuthFilter() {
     FilterRegistrationBean<TokenAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
