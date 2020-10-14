@@ -222,7 +222,7 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
                 // Check if user allowed
                 if (!isGuest) {
                   var user = [];
-                  if (call.owner.group) {
+                  if (call.owner.group && Object.keys(call.owner.members).length != 0) {
                     user = Object.keys(call.owner.members).filter(function(id) {
                       return id === userinfo.id;
                     });
