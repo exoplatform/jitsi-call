@@ -26,14 +26,16 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
     var getExoUserInfo = function() {
       return $.get({
         type: "GET",
-        url: "/jitsi/portal/rest/jitsi/userinfo"
+        url: "/jitsi/portal/rest/jitsi/userinfo",
+        cache: false
       });
     };
     // Request userinfo of guest via Gateway
     var getGuestUserInfo = function(inviteId) {
       return $.get({
         type: "GET",
-        url: "/jitsi/api/v1/userinfo/" + inviteId
+        url: "/jitsi/api/v1/userinfo/" + inviteId,
+        cache: false
       });
     };
     
@@ -45,6 +47,7 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
         data : JSON.stringify(callInfo),
         dataType: 'json',
         contentType: "application/json; charset=utf-8",
+        cache: false
       });
     };
 
@@ -55,7 +58,8 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
         beforeSend: function(request) {
           request.setRequestHeader("X-Exoplatform-Auth", authToken);
         },
-        url: "/portal/rest/jitsi/context/" + userId
+        url: "/portal/rest/jitsi/context/" + userId,
+        cache: false
       });
     };
 
@@ -66,7 +70,8 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
         beforeSend: function(request) {
           request.setRequestHeader("X-Exoplatform-Auth", authToken);
         },
-        url: "/portal/rest/jitsi/settings"
+        url: "/portal/rest/jitsi/settings",
+        cache: false
       });
     };
     
@@ -74,7 +79,8 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
     var getJitsiToken = function(username) {
       return $.get({
         type: "GET",
-        url: "/jitsi/api/v1/token/" + username
+        url: "/jitsi/api/v1/token/" + username,
+        cache: false
       });
     };
 
