@@ -52,7 +52,6 @@ public class CallService {
     return calls.get(callId);
   }
 
-
   /**
    * Gets the upload link.
    *
@@ -62,14 +61,13 @@ public class CallService {
   public String getUploadLink(String callId) {
     CallInfo callInfo = getCallInfo(callId);
     if (callInfo != null) {
-      String token = Jwts.builder()
-                         .setHeaderParam("typ", "JWT")
-                         .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5)))
-                         .claim("action", "external_auth")
-                         .claim("callInfo", callInfo)
-                         .signWith(Keys.hmacShaKeyFor(exoSecret.getBytes()))
-                         .compact();
-      return new StringBuilder(recordingsUrl).append("?token=").append(token).toString();
+      String owner = callInfo.isGroup() ? callInfo.getOwner() : callInfo.getModerator();
+      // TODO: add support for chat-rooms
+      return new StringBuilder(recordingsUrl).append("?owner=")
+                                             .append(owner)
+                                             .append("&isSpace=")
+                                             .append(callInfo.isGroup())
+                                             .toString();
     }
     return null;
   }

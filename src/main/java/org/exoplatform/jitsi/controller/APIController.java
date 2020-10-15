@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +41,6 @@ public class APIController {
   /** The call service. */
   @Autowired
   private CallService         callService;
-
 
   /**
    * Userinfo.
@@ -106,11 +104,16 @@ public class APIController {
    * @return the response entity
    */
   @GetMapping("/calls/{callId}/uploadLink")
-  public String uploadLink(@PathVariable("callId") String callId) {
+  public ResponseEntity<String> uploadLink(@PathVariable("callId") String callId) {
     if (log.isDebugEnabled()) {
       log.debug("Handled uploadLink request with callId {}", callId);
     }
-    return callService.getUploadLink(callId);
+    String uploadLink = callService.getUploadLink(callId);
+    // TODO: use ControllerAdvice for Exception Handling
+    if (uploadLink != null) {
+      return ResponseEntity.ok(uploadLink);
+    }
+    return ResponseEntity.badRequest().build();
   }
 
   /**
