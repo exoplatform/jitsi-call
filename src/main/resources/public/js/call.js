@@ -144,7 +144,7 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
               prejoinPageEnabled: true
             },
             interfaceConfigOverwrite: {
-              TOOLBAR_BUTTONS: ['microphone', 'chat', 'camera', 'desktop', 'fullscreen',
+              TOOLBAR_BUTTONS: ['microphone', 'chat', 'camera', 'desktop', 'recording', 'fullscreen',
                 'fodeviceselection', 'hangup', 'profile', 'sharedvideo', 
                 'settings', 'videoquality', 'tileview', 'videobackgroundblur', 'mute-everyone'
               ]
@@ -166,13 +166,13 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
           api.addEventListener('participantRoleChanged', function(event) {
             api.executeCommand('displayName', displayName);
             // For recording feature
-            /*if (event.role === "moderator") {
+            if (event.role === "moderator") {
              saveCallInfo(callId, {
                owner: call.owner.id,
                group: call.owner.group,
                moderator: userinfo.id
              });
-            }*/
+            }
           });
           
       });
