@@ -61,13 +61,17 @@ public class CallService {
   public String getUploadLink(String callId) {
     CallInfo callInfo = getCallInfo(callId);
     if (callInfo != null) {
-      String owner = callInfo.isGroup() ? callInfo.getOwner() : callInfo.getModerator();
+      String token = Jwts.builder()
+                         .setSubject("exo-webconf")
+                         .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(10)))
+                         .claim("action", "external_auth")
+                         .claim("owner", callInfo.getOwner())
+                         .claim("isGroup", callInfo.isGroup())
+                         .claim("moderator", callInfo.getModerator())
+                         .signWith(Keys.hmacShaKeyFor(exoSecret.getBytes()))
+                         .compact();
       // TODO: add support for chat-rooms
-      return new StringBuilder(recordingsUrl).append("?owner=")
-                                             .append(owner)
-                                             .append("&isSpace=")
-                                             .append(callInfo.isGroup())
-                                             .toString();
+      return new StringBuilder(recordingsUrl).append("?token=").append(token).toString();
     }
     return null;
   }
