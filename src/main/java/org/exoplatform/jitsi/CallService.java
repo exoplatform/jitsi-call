@@ -4,9 +4,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PostConstruct;
+
+import org.apache.commons.collections4.map.PassiveExpiringMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Jwts;
@@ -19,18 +23,35 @@ import io.jsonwebtoken.security.Keys;
 public class CallService {
 
   /** The log. */
-  private final static Logger       log   = LoggerFactory.getLogger(CallService.class);
+  private final static Logger                  log = LoggerFactory.getLogger(CallService.class);
 
   /** The recordings url. */
   @Value("${exo.recordings.url}")
-  private String                    recordingsUrl;
+  private String                               recordingsUrl;
 
   /** The exo secret. */
   @Value("${exo.jwt.secret}")
-  private String                    exoSecret;
+  private String                               exoSecret;
+
+  /** The expires (hours) for calls cache. */
+  @Value("${calls.cache.expires}")
+  private int                                  expires;
 
   /** The calls. */
-  private HashMap<String, CallInfo> calls = new HashMap<>();
+  private PassiveExpiringMap<String, CallInfo> calls;
+
+  /**
+   * Inits the.
+   *
+   * @throws InterruptedException the interrupted exception
+   */
+  @PostConstruct
+  public void init() throws InterruptedException {
+    PassiveExpiringMap.ConstantTimeToLiveExpirationPolicy<String, CallInfo> expirePeriod =
+                                                                                         new PassiveExpiringMap.ConstantTimeToLiveExpirationPolicy<>(expires,
+                                                                                                                                                     TimeUnit.HOURS);
+    this.calls = new PassiveExpiringMap<>(expirePeriod, new HashMap<>());
+  }
 
   /**
    * Save call info.
@@ -64,7 +85,6 @@ public class CallService {
       String token = Jwts.builder()
                          .setSubject("exo-webconf")
                          .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(10)))
-                         .claim("action", "external_auth")
                          .claim("owner", callInfo.getOwner())
                          .claim("isGroup", callInfo.isGroup())
                          .claim("moderator", callInfo.getModerator())
@@ -74,5 +94,15 @@ public class CallService {
       return new StringBuilder(recordingsUrl).append("?token=").append(token).toString();
     }
     return null;
+  }
+  
+  /**
+   * Delete expired items from the cache
+   */
+  @Scheduled(cron = "${calls.cache.cleanup}")
+  private void clearCache() {
+    // This triggers cleanup of the cache 
+    calls.size();
+    log.info("Calls cache was cleared from expired items");
   }
 }
