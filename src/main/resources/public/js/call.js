@@ -147,7 +147,8 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
               TOOLBAR_BUTTONS: ['microphone', 'chat', 'camera', 'desktop', 'recording', 'fullscreen',
                 'fodeviceselection', 'hangup', 'profile', 'sharedvideo', 
                 'settings', 'videoquality', 'tileview', 'videobackgroundblur', 'mute-everyone'
-              ]
+              ],
+              JITSI_WATERMARK_LINK: ""
             },
             userInfo: {
               displayName : displayName
