@@ -133,6 +133,7 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
         var callParticipants = callId.substring(2, callId.length).split("-");
         callParticipants.forEach(function(elem){ subj += elem.replace(/^./, elem[0].toUpperCase()) + " "; });
         var displayName = userinfo.firstName + " " + userinfo.lastName;
+        
         const options = {
             roomName: callId,
             width: '100%',
