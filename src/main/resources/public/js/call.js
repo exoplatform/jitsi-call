@@ -8,6 +8,8 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
     var authToken;
     var isStopped = false;
     var api;
+    var isModerator;
+    
     var getUrlParameter = function(sParam) {
       var sPageURL = window.location.search.substring(1),
         sURLVariables = sPageURL.split('&'),
@@ -113,6 +115,13 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
           if (update.eventType == "call_state") {
             if (update.callState == "stopped" && !isStopping) {
               isStopped = true;
+              if (isModerator) {
+                api.executeCommand('stopRecording', 
+                    mode: 'file'
+                );
+                console.log("Recording has been stopped");
+                api.dispose();
+              }
               $('body').html('<h2 style="margin:50px">Call has been stopped</h2>');
             }
           }
@@ -169,6 +178,7 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
             api.executeCommand('displayName', displayName);
             // For recording feature
             if (event.role === "moderator") {
+             isModerator = true;
              saveCallInfo(callId, {
                owner: call.owner.id,
                group: call.owner.group,
