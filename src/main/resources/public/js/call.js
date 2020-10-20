@@ -116,8 +116,9 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
             if (update.callState == "stopped" && !isStopping) {
               isStopped = true;
               if (isModerator) {
-                api.executeCommand('stopRecording', 
+                api.executeCommand('stopRecording', {
                     mode: 'file'
+                   }
                 );
                 console.log("Recording has been stopped");
                 api.dispose();
