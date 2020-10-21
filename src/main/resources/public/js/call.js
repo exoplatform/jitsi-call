@@ -1,4 +1,4 @@
-require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jitsi"], function(bootstrap, $, webconferencing, provider) {
+require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jitsi"], function($, webconferencing, provider) {
 
   var MeetApp = function() {
 
@@ -114,13 +114,9 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
           var callId = update.callId;
           if (update.eventType == "call_state") {
             if (update.callState == "stopped" && !isStopping) {
-              isStopped = true;
-              if (isModerator) {
-                api.executeCommand('stopRecording', 'file');
-                console.log("Recording has been stopped");
+                isStopped = true;
                 api.dispose();
-              }
-              $('body').html('<h2 style="margin:50px">Call has been stopped</h2>');
+                window.close();
             }
           }
         } // it's other provider type - skip it
@@ -167,11 +163,13 @@ require(["SHARED/bootstrap", "SHARED/jquery", "SHARED/webConferencing", "SHARED/
           console.log("Joined to the call " + callId);
           subscribeCall(userinfo.id);
           api.on("readyToClose", function(event) {
-            webconferencing.updateCall(callId, "leaved");
-              isStopped = true;
-              $("body").html('<h2 style="margin:50px">You have left the call.</h2>');
+            isStopped = true;
+            webconferencing.updateCall(callId, "leaved").done(function(){
+              api.dispose();
+              window.close();
+            });
            });
-          
+
           api.addEventListener('participantRoleChanged', function(event) {
             api.executeCommand('displayName', displayName);
             // For recording feature

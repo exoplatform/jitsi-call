@@ -12,4 +12,8 @@ var require = {
   }
 };
 
+var bootstrap = document.createElement('script');
+bootstrap.setAttribute('src', require.baseUrl + "/SHARED/bootstrap.js");
+document.head.append(bootstrap);
+
 
