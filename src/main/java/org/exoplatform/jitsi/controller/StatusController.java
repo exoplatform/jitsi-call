@@ -2,7 +2,6 @@ package org.exoplatform.jitsi.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,11 +20,11 @@ public class StatusController {
    * @return the response entity
    */
   @GetMapping("/")
-  public ResponseEntity<StatusResponse> status() {
+  public StatusResponse status() {
     if (log.isDebugEnabled()) {
       log.debug("Handled status request: active");
     }
-    return ResponseEntity.ok(new StatusResponse("active"));
+    return new StatusResponse("active");
   }
 
   /**
