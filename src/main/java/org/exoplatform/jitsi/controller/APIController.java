@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,12 +34,21 @@ public class APIController {
   private final static String AUTH_TOKEN_HEADER = "X-Exoplatform-External-Auth";
 
   /** The token service. */
-  @Autowired
-  private TokenService        tokenService;
+  private final TokenService  tokenService;
 
   /** The call service. */
-  @Autowired
-  private CallService         callService;
+  private final CallService   callService;
+
+  /**
+   * Instantiates a new API controller.
+   *
+   * @param tokenService the token service
+   * @param callService the call service
+   */
+  public APIController(TokenService tokenService, CallService callService) {
+    this.tokenService = tokenService;
+    this.callService = callService;
+  }
 
   /**
    * Userinfo.
