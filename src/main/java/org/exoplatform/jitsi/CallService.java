@@ -80,11 +80,13 @@ public class CallService {
    * @return the upload link
    */
   public String getUploadLink(String callId) {
+    
     CallInfo callInfo = getCallInfo(callId);
     if (callInfo != null) {
       String token = Jwts.builder()
                          .setSubject("exo-webconf")
                          .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(10)))
+                         .claim("callId", callId)
                          .claim("owner", callInfo.getOwner())
                          .claim("isGroup", callInfo.isGroup())
                          .claim("moderator", callInfo.getModerator())
