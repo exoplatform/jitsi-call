@@ -160,7 +160,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
               prejoinPageEnabled: true
             },
             interfaceConfigOverwrite: {
-              TOOLBAR_BUTTONS: ['microphone', 'chat', 'camera', 'desktop', 'recording', 'fullscreen',
+              TOOLBAR_BUTTONS: ['microphone', 'chat', 'camera', 'desktop', 'fullscreen',
                 'fodeviceselection', 'hangup', 'profile', 'sharedvideo', 
                 'settings', 'videoquality', 'tileview', 'videobackgroundblur', 'mute-everyone'
               ],
