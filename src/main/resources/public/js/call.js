@@ -111,8 +111,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
       webconferencing.onUserUpdate(userId, function(update) {
         // This connector cares only about own provider events
         if (update.providerType == "jitsi") {
-          var callId = update.callId;
-          if (update.eventType == "call_state") {
+          if (update.eventType == "call_state" && update.callId == callId) {
             if (update.callState == "stopped" && !isStopping) {
                 isStopped = true;
                 api.dispose();
