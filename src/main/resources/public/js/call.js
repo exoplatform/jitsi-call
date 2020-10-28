@@ -107,15 +107,15 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
     };
     
     /**
-     * Generated subject for call
+     * Generate room title
      * TODO: add i18n
      */
-    var getSubject = function(call) {
+    var getRoomTitle = function(call) {
       if (call.owner.group) {
-        return "Meet " + call.owner.title;
+        return "Call: " + call.owner.title;
       } 
       // 1-1 call
-      var subject = "Meet ";
+      var subject = "Call: ";
       call.participants.forEach((participant) => {
         subject += participant.title + " ";
       });
@@ -147,7 +147,8 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
       var name = userinfo.firstName + " " + userinfo.lastName;
       getJitsiToken(name).then(function(token){        
         var displayName = userinfo.firstName + " " + userinfo.lastName;
-        var subject = getSubject(call);
+        var roomTitle = getRoomTitle(call);
+        window.document.title = roomTitle;
         const options = {
             roomName: callId,
             width: '100%',
@@ -155,7 +156,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
             height: window.innerHeight,
             parentNode: document.querySelector("#meet"),
             configOverwrite: { 
-              subject: subject, 
+              subject: roomTitle, 
               prejoinPageEnabled: true
             },
             interfaceConfigOverwrite: {
