@@ -105,6 +105,22 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
         return currentURL.substring(currentURL.lastIndexOf("/") + 1);
       }
     };
+    
+    /**
+     * Generated subject for call
+     * TODO: add i18n
+     */
+    var getSubject = function(call) {
+      if (call.owner.group) {
+        return "Meet " + call.owner.title;
+      } 
+      // 1-1 call
+      var subject = "Meet ";
+      call.participants.forEach((participant) => {
+        subject += participant.title + " ";
+      });
+      return subject.trim();
+    };
 
     var subscribeCall = function(userId) {
       // Subscribe to user updates (incoming calls will be notified here)
@@ -130,12 +146,8 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
       const domain = apiUrl.substring(apiUrl.indexOf("://") + 3, apiUrl.lastIndexOf("/external_api.js"));
       var name = userinfo.firstName + " " + userinfo.lastName;
       getJitsiToken(name).then(function(token){        
-        // TODO: create subj from pretty names
-        var subj = "Meet ";
-        var callParticipants = callId.substring(2, callId.length).split("-");
-        callParticipants.forEach(function(elem){ subj += elem.replace(/^./, elem[0].toUpperCase()) + " "; });
         var displayName = userinfo.firstName + " " + userinfo.lastName;
-        
+        var subject = getSubject(call);
         const options = {
             roomName: callId,
             width: '100%',
@@ -143,7 +155,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
             height: window.innerHeight,
             parentNode: document.querySelector("#meet"),
             configOverwrite: { 
-              subject: subj, 
+              subject: subject, 
               prejoinPageEnabled: true
             },
             interfaceConfigOverwrite: {
