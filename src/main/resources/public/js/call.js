@@ -107,8 +107,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
     };
     
     /**
-     * Generate room title
-     * TODO: add i18n
+     * Generate room title TODO: add i18n
      */
     var getRoomTitle = function(call) {
       if (call.owner.group) {
@@ -121,6 +120,39 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
       });
       return subject.trim();
     };
+    
+    /**
+     * Inits loader screen. TODO: add i18n
+     */
+    var initLoaderScreen = function(userId, call) {
+      var $loader = $("#loader .content");
+      var join = false;
+      call.participants.forEach((part) => {
+        if (part.state == "joined" && userId != part.id) {
+          join = true;
+        }
+      });
+      $loader.find(".label").html(join ? "You are joining": "You are calling");
+     
+      if (call.owner.group) {
+        var link = call.owner.avatarLink;
+        $loader.find(".logo").css("background-image", "url(" + link +")");
+        $loader.find(".room").html(call.owner.title);
+      } else {
+        for (var i = 0; i < call.participants.length; i++) {
+          // not current user
+          if (call.participants[i].id != userId) {
+            var link = call.participants[i].avatarLink;
+            $loader.find(".logo").css("background-image", "url(" + link +")");
+            $loader.find(".room").html(call.participants[i].title);
+            break;
+          }
+        }
+      }
+    }
+    var hideLoader = function(){
+      $("#loader").css("display", "none");
+    }
 
     var subscribeCall = function(userId) {
       // Subscribe to user updates (incoming calls will be notified here)
@@ -141,6 +173,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
     };
 
     var initCall = function(userinfo, call) {
+      initLoaderScreen(userinfo.id, call);
       console.log("Init call with userInfo: " + JSON.stringify(userinfo));
       var apiUrl = document.getElementById("jitsi-api").getAttribute("src");
       const domain = apiUrl.substring(apiUrl.indexOf("://") + 3, apiUrl.lastIndexOf("/external_api.js"));
@@ -155,6 +188,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
             jwt : token,
             height: window.innerHeight,
             parentNode: document.querySelector("#meet"),
+            onload: hideLoader,
             configOverwrite: { 
               subject: roomTitle, 
               prejoinPageEnabled: true
@@ -242,7 +276,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
                 // Check if user allowed
                 if (!isGuest) {
                   var user = [];
-                  if (call.owner.group && Object.keys(call.owner.members).length != 0) {
+                  if (call.owner.group) {
                     user = Object.keys(call.owner.members).filter(function(id) {
                       return id === userinfo.id;
                     });
