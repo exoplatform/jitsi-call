@@ -111,14 +111,37 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
      */
     var getRoomTitle = function(call) {
       if (call.owner.group) {
+        return call.owner.title;
+      } 
+      // 1-1 call
+      var subject = "";
+      call.participants.forEach((participant) => {
+        subject += participant.title + " - ";
+      });
+      if (subject.length > 3) {
+        subject = subject.slice(0, -3);
+      }
+      return subject;
+    };
+    
+    /**
+     * Generate room title TODO: add i18n
+     */
+    var getTabTitle = function(call, userId) {
+      if (call.owner.group) {
         return "Call: " + call.owner.title;
       } 
       // 1-1 call
-      var subject = "Call: ";
+      var title = "Call: ";
       call.participants.forEach((participant) => {
-        subject += participant.title + " ";
+        if (participant.id != userId) {
+          title += participant.title + " - ";
+        }
       });
-      return subject.trim();
+      if (title.length > 3) {
+        title = title.slice(0, -3);
+      }
+      return title;
     };
     
     /**
@@ -181,7 +204,8 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
       getJitsiToken(name).then(function(token){        
         var displayName = userinfo.firstName + " " + userinfo.lastName;
         var roomTitle = getRoomTitle(call);
-        window.document.title = roomTitle;
+        var tabTitle = getTabTitle(call, userinfo.id);
+        window.document.title = tabTitle;
         const options = {
             roomName: callId,
             width: '100%',
