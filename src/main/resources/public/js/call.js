@@ -125,7 +125,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
     };
     
     /**
-     * Generate room title TODO: add i18n
+     * Generate tab title TODO: add i18n
      */
     var getTabTitle = function(call, userId) {
       if (call.owner.group) {
