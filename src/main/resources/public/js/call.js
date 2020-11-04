@@ -206,6 +206,11 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
         var roomTitle = getRoomTitle(call);
         var tabTitle = getTabTitle(call, userinfo.id);
         window.document.title = tabTitle;
+        
+        var settings = ['devices', 'language', 'moderator'];
+        if (isGuest) {
+          settings.push('profile');
+        }
         const options = {
             roomName: callId,
             width: '100%',
@@ -222,7 +227,8 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
                 'fodeviceselection', 'hangup', 'profile', 'sharedvideo', 
                 'settings', 'videoquality', 'tileview', 'videobackgroundblur', 'mute-everyone'
               ],
-              JITSI_WATERMARK_LINK: ""
+              JITSI_WATERMARK_LINK: "",
+              SETTINGS_SECTIONS: settings
             },
             userInfo: {
               displayName : displayName
