@@ -274,7 +274,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
         if (inviteId) {
           let trimmedUrl = window.location.href.substring(0, window.location.href.indexOf("?"));
           window.history.pushState({}, "", trimmedUrl);
-          getGuestUserInfo(inviteId).then(function(data) {
+          getExoUserInfo().then(function(data) {
             isGuest = true;
             $initUser.resolve(data.userInfo, data.authToken);
           }).catch(function(err) {
@@ -302,28 +302,29 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
               provider.configure(settings);
               webconferencing.addProvider(provider);
               webconferencing.update();
-              webconferencing.getCall(callId).then(function(call) {
-                // Check if user allowed
-                if (!isGuest) {
-                  var user = [];
-                  if (call.owner.group) {
-                    user = Object.keys(call.owner.members).filter(function(id) {
-                      return id === userinfo.id;
-                    });
-                  } else {
+              var $promise = $.Deferred();
+              if (isGuest) {
+                webconferencing.addGuest(callId, userinfo).then(function(){
+                  $promise.resolve();
+                });
+              } else {
+                $promise.resolve();
+              }
+              $promise.then(function(){
+                webconferencing.getCall(callId).then(function(call) {
+                    var user = [];
                     user = call.participants.filter(function(participant) {
-                      return participant.id === userinfo.id;
-                    });
-                  }
-                  if (user.length == 0) {
-                    alert("User is not allowed for this call");
-                    return;
-                  }
-                }
-                initCall(userinfo, call);
-              }).catch(function(err) {
-                console.log("Cannot init call:" + JSON.stringify(err));
-                alert("Error occured while initializing the call.");
+                        return participant.id === userinfo.id;
+                      });
+                    if (user.length == 0) {
+                      alert("User is not allowed for this call");
+                      return;
+                    }
+                  initCall(userinfo, call);
+                }).catch(function(err) {
+                  console.log("Cannot init call:" + JSON.stringify(err));
+                  alert("Error occured while initializing the call.");
+                });
               });
             });
           });
