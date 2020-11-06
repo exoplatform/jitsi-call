@@ -224,7 +224,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
             },
             interfaceConfigOverwrite: {
               TOOLBAR_BUTTONS: ['microphone', 'chat', 'camera', 'desktop', 'fullscreen',
-                'fodeviceselection', 'hangup', 'profile', 'sharedvideo', 
+                'fodeviceselection', 'recording', 'hangup', 'profile', 'sharedvideo', 
                 'settings', 'videoquality', 'tileview', 'videobackgroundblur', 'mute-everyone'
               ],
               JITSI_WATERMARK_LINK: "",
