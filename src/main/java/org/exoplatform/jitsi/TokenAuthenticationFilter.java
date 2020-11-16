@@ -23,7 +23,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 /**
- * The Class TokenAuthenticationFilter.
+ * The Class TokenAuthenticationFilter used to secure endpoints.
  */
 public class TokenAuthenticationFilter implements Filter {
 

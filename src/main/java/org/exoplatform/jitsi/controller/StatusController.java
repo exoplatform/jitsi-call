@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * The Class StatusController.
+ * The Class StatusController shows if the app is active.
  */
 @RestController
 public class StatusController {

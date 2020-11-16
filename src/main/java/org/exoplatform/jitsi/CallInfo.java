@@ -1,7 +1,9 @@
 package org.exoplatform.jitsi;
 
 /**
- * The Class CallInfo.
+ * CallInfo is used to store basic information about the call.
+ * This can be used to define a user/group who will be owner of recording. 
+ * ( moderator or owner ) 
  */
 public class CallInfo {
 
@@ -97,7 +99,5 @@ public class CallInfo {
   public String toString() {
     return "CallInfo [owner=" + owner + ", group=" + group + ", moderator=" + moderator + "]";
   }
-  
-  
 
 }

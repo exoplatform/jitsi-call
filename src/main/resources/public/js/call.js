@@ -5,6 +5,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
     var callId;
     var isStopping = false;
     var isGuest = false;
+    var inviteId;
     var authToken;
     var isStopped = false;
     var api;
@@ -29,14 +30,6 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
       return $.get({
         type: "GET",
         url: "/jitsi/portal/rest/jitsi/userinfo",
-        cache: false
-      });
-    };
-    // Request userinfo of guest via Gateway
-    var getGuestUserInfo = function(inviteId) {
-      return $.get({
-        type: "GET",
-        url: "/jitsi/api/v1/userinfo/" + inviteId,
         cache: false
       });
     };
@@ -73,6 +66,15 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
           request.setRequestHeader("X-Exoplatform-Auth", authToken);
         },
         url: "/portal/rest/jitsi/settings",
+        cache: false
+      });
+    };
+    
+    // Request internal auth token for guests
+    var getInternalToken = function() {
+      return $.get({
+        type: "GET",
+        url: "/jitsi/portal/rest/jitsi/token",
         cache: false
       });
     };
@@ -195,6 +197,9 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
       });
     };
 
+    /**
+     * Initializes the call
+     */
     var initCall = function(userinfo, call) {
       initLoaderScreen(userinfo.id, call);
       console.log("Init call with userInfo: " + JSON.stringify(userinfo));
@@ -206,7 +211,6 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
         var roomTitle = getRoomTitle(call);
         var tabTitle = getTabTitle(call, userinfo.id);
         window.document.title = tabTitle;
-        
         var settings = ['devices', 'language', 'moderator'];
         if (isGuest) {
           settings.push('profile');
@@ -263,6 +267,19 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
       
     };
 
+    /**
+     * Shows sign in page MOCK
+     */
+    var showSignInPage = function(){
+      var $promise = $.Deferred();
+      var settings = {
+          firstName : "John",
+          lastName : "Doe"
+      };
+      $promise.resolve(settings);
+      return $promise;
+    };
+       
 
     /**
      * Inits current user and context
@@ -270,28 +287,34 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
     this.init = function() {
         callId = getCallId();
         var $initUser = $.Deferred();
-        var inviteId = getUrlParameter("inviteId");
+        inviteId = getUrlParameter("inviteId");
         if (inviteId) {
           let trimmedUrl = window.location.href.substring(0, window.location.href.indexOf("?"));
           window.history.pushState({}, "", trimmedUrl);
-          getExoUserInfo().then(function(data) {
-            isGuest = true;
-            $initUser.resolve(data.userInfo, data.authToken);
-          }).catch(function(err) {
-            console.log("Cannot get guest user info: " + JSON.stringify(err));
-            $initUser.fail(err);
-            // TODO: show user-friendly error?
-          });
-        } else {
-          getExoUserInfo().then(function(data) {
-            $initUser.resolve(data.userInfo, data.authToken);
-          }).catch(function(err) {
-            console.log("Cannot get exo user info: " + JSON.stringify(err));
-            // $initUser.fail(err);
-            // redirect to login page
-            window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId
-          });
+          isGuest = true;
         }
+        getExoUserInfo().then(function(data) {
+            $initUser.resolve(data.userInfo, data.authToken);
+          }).catch(function(err) {
+            console.log("ERR: " + JSON.stringify(err));
+            if(!isGuest) {
+              window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId
+            } else {
+             // SHOW SIGN UP PAGE
+              // Get firstName and lastName
+              showSignInPage().then(function(settings) {
+                var guestInfo = {};
+                guestInfo.firstName = settings.firstName;
+                guestInfo.lastName = settings.lastName;
+                // TODO: generate unique id
+                guestInfo.id = "guest-" + settings.firstName + "-" + settings.lastName + "-" + Date.now();
+                getInternalToken().then(function(response) {
+                  var token = response.token;
+                  $initUser.resolve(guestInfo, token);
+                });
+              });
+            }     
+          });
 
         $initUser.then(function(userinfo, token) {
           authToken = token;
@@ -304,8 +327,17 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
               webconferencing.update();
               var $promise = $.Deferred();
               if (isGuest) {
-                webconferencing.addGuest(callId, userinfo).then(function(){
-                  $promise.resolve();
+                webconferencing.checkInvite(callId, inviteId, userinfo.id).then(function(result){
+                  if (result.allowed) {
+                    webconferencing.addGuest(callId, userinfo.id).then(function(){
+                      $promise.resolve();
+                    });
+                  } else {
+                    $promise.resolve();
+                    console.log("Guest is not invited to this call");
+                  }
+                }).catch(function(err){
+                  console.log("Cannot check invite:" + JSON.stringify(err));
                 });
               } else {
                 $promise.resolve();
