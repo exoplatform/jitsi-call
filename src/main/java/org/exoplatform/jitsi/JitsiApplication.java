@@ -28,7 +28,7 @@ public class JitsiApplication {
   }
 
   /**
-   * Token auth filter.
+   * Token auth filter for /meet/ and /api/ endpoints.
    *
    * @return the filter registration bean
    */

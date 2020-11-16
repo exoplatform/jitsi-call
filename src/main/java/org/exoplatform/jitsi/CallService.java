@@ -17,7 +17,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 /**
- * The Class CallService.
+ * The Class CallService is used to handle CallInfo and upload links for recordings.
  */
 @Service
 public class CallService {
@@ -75,12 +75,13 @@ public class CallService {
 
   /**
    * Gets the upload link.
+   * Generates the links with token, that contains call info ( can be used to determine recording owner )
    *
    * @param callId the call id
    * @return the upload link
    */
   public String getUploadLink(String callId) {
-    
+
     CallInfo callInfo = getCallInfo(callId);
     if (callInfo != null) {
       String token = Jwts.builder()
@@ -97,13 +98,13 @@ public class CallService {
     }
     return null;
   }
-  
+
   /**
    * Delete expired items from the cache
    */
   @Scheduled(cron = "${calls.cache.cleanup}")
   private void clearCache() {
-    // This triggers cleanup of the cache 
+    // This triggers cleanup of the cache
     calls.size();
     log.info("Calls cache was cleared from expired items");
   }

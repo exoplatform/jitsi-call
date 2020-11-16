@@ -10,7 +10,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 /**
- * The Class TokenService.
+ * The Class TokenService used to manage Jitsi tokens.
  */
 @Component
 public class TokenService {
@@ -24,7 +24,7 @@ public class TokenService {
   private String appId;
 
   /**
-   * Creates the token.
+   * Creates the token that will be used in Jitsi ( pass to IFrame ).
    *
    * @param username the username
    * @return the string

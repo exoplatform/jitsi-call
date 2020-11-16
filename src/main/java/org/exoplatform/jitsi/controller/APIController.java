@@ -21,17 +21,14 @@ import org.exoplatform.jitsi.CallService;
 import org.exoplatform.jitsi.TokenService;
 
 /**
- * The Class APIController.
+ * The Class APIController used to handle REST requests to Jitsi Call APP.
  */
 @RestController
 @RequestMapping("api/v1")
 public class APIController {
 
   /** The log. */
-  private final static Logger log               = LoggerFactory.getLogger(APIController.class);
-
-  /** The Constant AUTH_TOKEN_HEADER. */
-  private final static String AUTH_TOKEN_HEADER = "X-Exoplatform-External-Auth";
+  private final static Logger log = LoggerFactory.getLogger(APIController.class);
 
   /** The token service. */
   private final TokenService  tokenService;
@@ -48,23 +45,6 @@ public class APIController {
   public APIController(TokenService tokenService, CallService callService) {
     this.tokenService = tokenService;
     this.callService = callService;
-  }
-
-  /**
-   * Userinfo.
-   *
-   * @param request the request
-   * @param inviteId the invite id
-   * @return the user info response
-   */
-  @GetMapping("/userinfo/{inviteId}")
-  public UserInfoResponse userinfo(HttpServletRequest request, @PathVariable("inviteId") String inviteId) {
-    if (log.isDebugEnabled()) {
-      log.debug("Handled userinfo request with inviteId {}", inviteId);
-    }
-    UserInfo userInfo = new UserInfo("guest-" + inviteId, "Guest", inviteId);
-    String token = request.getHeader(AUTH_TOKEN_HEADER);
-    return new UserInfoResponse(userInfo, token);
   }
 
   /**
@@ -87,7 +67,7 @@ public class APIController {
   }
 
   /**
-   * Save call info.
+   * Save call info. Used to store call info before call starts.
    *
    * @param request the request
    * @param callId the call id
@@ -106,7 +86,8 @@ public class APIController {
   }
 
   /**
-   * Save call info.
+   * Get upload link. 
+   * Returns link that will be used by Jibri ( finalize.sh ) to upload recording to eXo side
    *
    * @param callId the call id
    * @return the response entity
