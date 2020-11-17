@@ -1,7 +1,5 @@
 <template>
   <div id="meet">
-   
-    
   </div>
 </template>
 

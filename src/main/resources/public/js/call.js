@@ -1,7 +1,10 @@
-require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jitsi", "app"], function($, webconferencing, provider, app) {
-
-  var MeetApp = function() {
-
+require([
+  "SHARED/jquery",
+  "SHARED/webConferencing",
+  "SHARED/webConferencing_jitsi",
+  "app",
+], function ($, webconferencing, provider, app) {
+  var MeetApp = function () {
     var callId;
     var isStopping = false;
     var isGuest = false;
@@ -10,47 +13,50 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
     var isStopped = false;
     var api;
     var isModerator;
-    
-    var getUrlParameter = function(sParam) {
+
+    var getUrlParameter = function (sParam) {
       var sPageURL = window.location.search.substring(1),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName, i;
+        sURLVariables = sPageURL.split("&"),
+        sParameterName,
+        i;
 
       for (i = 0; i < sURLVariables.length; i++) {
-        sParameterName = sURLVariables[i].split('=');
+        sParameterName = sURLVariables[i].split("=");
 
         if (sParameterName[0] === sParam) {
-          return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+          return sParameterName[1] === undefined
+            ? true
+            : decodeURIComponent(sParameterName[1]);
         }
       }
     };
 
     // Request userinfo of exo user via Gateway
-    var getExoUserInfo = function() {
+    var getExoUserInfo = function () {
       return $.get({
         type: "GET",
         url: "/jitsi/portal/rest/jitsi/userinfo",
         cache: false
       });
     };
-    
+
     // Save call info via Gateway
     // TODO: Secure
-    var saveCallInfo = function(callId, callInfo) {
+    var saveCallInfo = function (callId, callInfo) {
       return $.post({
         url: "/jitsi/api/v1/calls/" + callId,
-        data : JSON.stringify(callInfo),
-        dataType: 'json',
+        data: JSON.stringify(callInfo),
+        dataType: "json",
         contentType: "application/json; charset=utf-8",
         cache: false
       });
     };
 
     // Request contextinfo
-    var getContextInfo = function(userId) {
+    var getContextInfo = function (userId) {
       return $.get({
         type: "GET",
-        beforeSend: function(request) {
+        beforeSend: function (request) {
           request.setRequestHeader("X-Exoplatform-Auth", authToken);
         },
         url: "/portal/rest/jitsi/context/" + userId,
@@ -59,28 +65,28 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
     };
 
     // Request provider settings
-    var getSettings = function() {
+    var getSettings = function () {
       return $.get({
         type: "GET",
-        beforeSend: function(request) {
+        beforeSend: function (request) {
           request.setRequestHeader("X-Exoplatform-Auth", authToken);
         },
         url: "/portal/rest/jitsi/settings",
         cache: false
       });
     };
-    
+
     // Request internal auth token for guests
-    var getInternalToken = function() {
+    var getInternalToken = function () {
       return $.get({
         type: "GET",
         url: "/jitsi/portal/rest/jitsi/token",
         cache: false
       });
     };
-    
+
     // Request provider settings
-    var getJitsiToken = function(username) {
+    var getJitsiToken = function (username) {
       return $.get({
         type: "GET",
         url: "/jitsi/api/v1/token/" + username,
@@ -88,33 +94,35 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
       });
     };
 
-    var beforeunloadListener = function() {
+    var beforeunloadListener = function () {
       if (!isStopped) {
         isStopping = true;
-        webconferencing.updateCall(callId, 'leaved');
+        webconferencing.updateCall(callId, "leaved");
       }
       if (api) {
         api.dispose();
       }
-     
     };
 
-    var getCallId = function() {
+    var getCallId = function () {
       var currentURL = window.location.href;
       if (currentURL.indexOf("?") !== -1) {
-        return currentURL.substring(currentURL.lastIndexOf("/") + 1, currentURL.indexOf("?"));
+        return currentURL.substring(
+          currentURL.lastIndexOf("/") + 1,
+          currentURL.indexOf("?")
+        );
       } else {
         return currentURL.substring(currentURL.lastIndexOf("/") + 1);
       }
     };
-    
+
     /**
      * Generate room title TODO: add i18n
      */
-    var getRoomTitle = function(call) {
+    var getRoomTitle = function (call) {
       if (call.owner.group) {
         return call.owner.title;
-      } 
+      }
       // 1-1 call
       var subject = "";
       call.participants.forEach((participant) => {
@@ -125,14 +133,14 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
       }
       return subject;
     };
-    
+
     /**
      * Generate tab title TODO: add i18n
      */
-    var getTabTitle = function(call, userId) {
+    var getTabTitle = function (call, userId) {
       if (call.owner.group) {
         return "Call: " + call.owner.title;
-      } 
+      }
       // 1-1 call
       var title = "Call: ";
       call.participants.forEach((participant) => {
@@ -145,231 +153,283 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
       }
       return title;
     };
-    
+
     /**
      * Inits loader screen. TODO: add i18n
      */
     var initLoaderScreen = function(userId, call) {
-    
       var $loader = $("#loader .content");
       var join = false;
-      call.participants.forEach((part) => {
+      call.participants.forEach(part => {
         if (part.state == "joined" && userId != part.id) {
           join = true;
         }
       });
-      $loader.find(".label").html(join ? "You are joining": "You are calling");
-     
+      $loader.find(".label").html(join ? "You are joining" : "You are calling");
+
       if (call.owner.group) {
         var link = call.owner.avatarLink;
-        $loader.find(".logo").css("background-image", "url(" + link +")");
+        $loader.find(".logo").css("background-image", "url(" + link + ")");
         $loader.find(".room").html(call.owner.title);
       } else {
         for (var i = 0; i < call.participants.length; i++) {
           // not current user
           if (call.participants[i].id != userId) {
             var link = call.participants[i].avatarLink;
-            $loader.find(".logo").css("background-image", "url(" + link +")");
+            $loader.find(".logo").css("background-image", "url(" + link + ")");
             $loader.find(".room").html(call.participants[i].title);
             break;
           }
         }
       }
     };
-    
+
     /**
      * Hides loader
      */
-    var hideLoader = function(){
+    var hideLoader = function () {
       $("#loader").css("display", "none");
     };
-    
+
     /*
      * Init invite popup
      */
-   /* var initInvitePopup = function(inviteId) {
+    /* var initInvitePopup = function(inviteId) {
       var url = window.location.href + "?inviteId=" + inviteId;
       $("#invite-link").val(url);
     };*/
 
-    var subscribeCall = function(userId) {
+    var subscribeCall = function (userId) {
       // Subscribe to user updates (incoming calls will be notified here)
-      webconferencing.onUserUpdate(userId, function(update) {
-        // This connector cares only about own provider events
-        if (update.providerType == "jitsi") {
-          if (update.eventType == "call_state" && update.callId == callId) {
-            if (update.callState == "stopped" && !isStopping) {
+      webconferencing.onUserUpdate(
+        userId,
+        function (update) {
+          // This connector cares only about own provider events
+          if (update.providerType == "jitsi") {
+            if (update.eventType == "call_state" && update.callId == callId) {
+              if (update.callState == "stopped" && !isStopping) {
                 isStopped = true;
                 api.dispose();
                 window.close();
+              }
             }
-          }
-        } // it's other provider type - skip it
-      }, function(err) {
-        log.error("Failed to listen on user updates", err);
-      });
+          } // it's other provider type - skip it
+        },
+        function (err) {
+          log.error("Failed to listen on user updates", err);
+        }
+      );
     };
 
     /**
      * Initializes the call
      */
-    var initCall = function(userinfo, call) {
+    var initCall = function (userinfo, call) {
       initLoaderScreen(userinfo.id, call);
      // initInvitePopup(call.inviteId);
      // console.log("Init call with userInfo: " + JSON.stringify(userinfo));
       var apiUrl = document.getElementById("jitsi-api").getAttribute("src");
-      const domain = apiUrl.substring(apiUrl.indexOf("://") + 3, apiUrl.lastIndexOf("/external_api.js"));
+      const domain = apiUrl.substring(
+        apiUrl.indexOf("://") + 3,
+        apiUrl.lastIndexOf("/external_api.js")
+      );
       var name = userinfo.firstName + " " + userinfo.lastName;
       if (isGuest) {
         name += " (guest)";
       }
-      getJitsiToken(name).then(function(token){        
+      getJitsiToken(name).then(function (token) {
         var roomTitle = getRoomTitle(call);
         var tabTitle = getTabTitle(call, userinfo.id);
         window.document.title = tabTitle;
-        var settings = ['devices', 'language', 'moderator'];
+        var settings = ["devices", "language", "moderator"];
         if (isGuest) {
-          settings.push('profile');
+          settings.push("profile");
         }
         const options = {
-            roomName: callId,
-            width: '100%',
-            jwt : token,
-            height: window.innerHeight,
-            parentNode: document.querySelector("#meet"),
-            onload: hideLoader,
-            configOverwrite: { 
-              subject: roomTitle, 
-              prejoinPageEnabled: true
-            },
-            interfaceConfigOverwrite: {
-              TOOLBAR_BUTTONS: ['microphone', 'chat', 'camera', 'desktop', 'fullscreen',
-                'fodeviceselection', 'recording', 'hangup', 'profile', 'sharedvideo', 
-                'settings', 'videoquality', 'tileview', 'videobackgroundblur', 'mute-everyone'
-              ],
-              JITSI_WATERMARK_LINK: "",
-              SETTINGS_SECTIONS: settings
-            },
-            userInfo: {
-              displayName : name
-            }
-          };
-          api = new JitsiMeetExternalAPI(domain, options);
-          webconferencing.updateCall(callId, "joined");
-          console.log("Joined to the call " + callId);
-          subscribeCall(userinfo.id);
-          api.on("readyToClose", function(event) {
-            isStopped = true;
-            webconferencing.updateCall(callId, "leaved").done(function(){
-              api.dispose();
-              window.close();
-            });
-           });
-
-          api.addEventListener('participantRoleChanged', function(event) {
-            api.executeCommand('displayName', name);
-            // For recording feature
-            if (event.role === "moderator") {
-             isModerator = true;
-             var participantIds = call.participants.map(function(part) {
-               return part.id;
-             });
-             saveCallInfo(callId, {
-               owner: call.owner.id,
-               type: call.owner.type,
-               moderator: userinfo.id,
-               participants: participantIds
-             });
-            }
+          roomName: callId,
+          width: "100%",
+          jwt: token,
+          height: window.innerHeight,
+          parentNode: document.querySelector("#meet"),
+          onload: hideLoader,
+          configOverwrite: {
+            subject: roomTitle,
+            prejoinPageEnabled: true,
+          },
+          interfaceConfigOverwrite: {
+            TOOLBAR_BUTTONS: [
+              "microphone",
+              "chat",
+              "camera",
+              "desktop",
+              "fullscreen",
+              "fodeviceselection",
+              "recording",
+              "hangup",
+              "profile",
+              "sharedvideo",
+              "settings",
+              "videoquality",
+              "tileview",
+              "videobackgroundblur",
+              "mute-everyone",
+            ],
+            JITSI_WATERMARK_LINK: "",
+            SETTINGS_SECTIONS: settings,
+          },
+          userInfo: {
+            displayName: name,
+          }
+        };
+        api = new JitsiMeetExternalAPI(domain, options);
+        webconferencing.updateCall(callId, "joined");
+        console.log("Joined to the call " + callId);
+        subscribeCall(userinfo.id);
+        api.on("readyToClose", function (event) {
+          isStopped = true;
+          webconferencing.updateCall(callId, "leaved").done(function () {
+            api.dispose();
+            window.close();
           });
-          
+        });
+        api.addEventListener("participantRoleChanged", function (event) {
+          const inviteLink = provider.getInviteLink(call);
+          app.initCopy(inviteLink);
+          api.executeCommand('displayName', displayName);
+          // For recording feature
+          if (event.role === "moderator") {
+           isModerator = true;
+           var participantIds = call.participants.map(function(part) {
+             return part.id;
+           });
+           saveCallInfo(callId, {
+             owner: call.owner.id,
+             type: call.owner.type,
+             moderator: userinfo.id,
+             participants: participantIds
+           });
+          }
+        });          
       });
-      
     };
 
     /**
      * Shows sign in page MOCK
      */
-    var showSignInPage = function(){
+    var showSignInPage = function () {
       var $promise = $.Deferred();
       var settings = {
-          firstName : "John",
-          lastName : "Doe"
+        firstName: "John",
+        lastName: "Doe",
       };
       $promise.resolve(settings);
       return $promise;
     };
-       
 
     /**
      * Inits current user and context
      */
-    this.init = function() {
-        callId = getCallId();
-        var $initUser = $.Deferred();
-        inviteId = getUrlParameter("inviteId");
-        if (inviteId) {
-          let trimmedUrl = window.location.href.substring(0, window.location.href.indexOf("?"));
-          window.history.pushState({}, "", trimmedUrl);
-          isGuest = true;
-        }
-        getExoUserInfo().then(function(data) {
-            $initUser.resolve(data.userInfo, data.authToken);
-          }).catch(function(err) {
-            console.log("Cannot get exo userinfo: " + JSON.stringify(err));
-            if(!isGuest) {
-              window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId
-            } else {
-              // Show signIn page 
-              // Get firstName and lastName
-              showSignInPage().then(function(settings) {
-                var guestInfo = {};
-                guestInfo.firstName = settings.firstName;
-                guestInfo.lastName = settings.lastName;
-                // Generate unique id
-                guestInfo.id = "guest-" + settings.firstName + "-" + settings.lastName + "-" + Date.now();
-                getInternalToken().then(function(response) {
+    this.init = function () {
+      // var $callUrl = $.Deferred();
+      callId = getCallId();
+      var $initUser = $.Deferred();
+      inviteId = getUrlParameter("inviteId");
+      if (inviteId) {
+        let trimmedUrl = window.location.href.substring(
+          0,
+          window.location.href.indexOf("?")
+        );
+        window.history.pushState({}, "", trimmedUrl);
+        isGuest = true;
+      }
+      getExoUserInfo()
+        .then(function (data) {
+          $initUser.resolve(data.userInfo, data.authToken);
+        })
+        .catch(function (err) {
+          console.log("Cannot get exo userinfo: " + JSON.stringify(err));
+          if (!isGuest) {
+            window.document.location.href =
+              "/portal/login?initialURI=/jitsi/meet/" + callId;
+          } else {
+            // Show signIn page
+            // Get firstName and lastName
+            showSignInPage().then(function (settings) {
+              var guestInfo = {};
+              guestInfo.firstName = settings.firstName;
+              guestInfo.lastName = settings.lastName;
+              // Generate unique id
+              guestInfo.id =
+                "guest-" +
+                settings.firstName +
+                "-" +
+                settings.lastName +
+                "-" +
+                Date.now();
+              getInternalToken()
+                .then(function (response) {
                   var token = response.token;
                   $initUser.resolve(guestInfo, token);
-                }).catch(function(err) {
-                  console.log("Cannot get internal auth token: " + JSON.stringify(err));
+                })
+                .catch(function (err) {
+                  console.log(
+                    "Cannot get internal auth token: " + JSON.stringify(err)
+                  );
                 });
-              });
-            }     
-          });
+            });
+          }
+        });
 
-        $initUser.then(function(userinfo, token) {
-          authToken = token;
-          getContextInfo(userinfo.id).then(function(contextInfo) {
-            getSettings().then(function(settings) {
-              eXo.env.portal.profileOwner = userinfo.id;
-              webconferencing.init(userinfo, contextInfo);
-              provider.configure(settings);
-              webconferencing.addProvider(provider);
-              webconferencing.update();
-              var $promise = $.Deferred();
-              if (isGuest) {
-                webconferencing.checkInvite(callId, inviteId, userinfo.id).then(function(result){
+      $initUser.then(function (userinfo, token) {
+        authToken = token;
+        getContextInfo(userinfo.id).then(function (contextInfo) {
+          getSettings().then(function (settings) {
+            eXo.env.portal.profileOwner = userinfo.id;
+            webconferencing.init(userinfo, contextInfo);
+            provider.configure(settings);
+            webconferencing.addProvider(provider);
+            webconferencing.update();
+            var $promise = $.Deferred();
+            if (isGuest) {
+              webconferencing
+                .checkInvite(callId, inviteId, userinfo.id)
+                .then(function (result) {
                   if (result.allowed) {
-                    webconferencing.addGuest(callId, userinfo.id).then(function(){
-                      $promise.resolve();
-                    });
+                    webconferencing
+                      .addGuest(callId, userinfo.id)
+                      .then(function () {
+                        $promise.resolve();
+                      });
                   } else {
                     $promise.resolve();
                     console.log("Guest is not invited to this call");
                   }
-                }).catch(function(err){
+                })
+                .catch(function (err) {
                   console.log("Cannot check invite:" + JSON.stringify(err));
                 });
-              } else {
-                $promise.resolve();
-              }
-              $promise.then(function(){
-                webconferencing.getCall(callId).then(function(call) {
-                    var user = [];
-                    user = call.participants.filter(function(participant) {
-                        return participant.id === userinfo.id;
-                      });
+            } else {
+              $promise.resolve();
+            }
+            $promise.then(function () {
+              webconferencing
+                .getCall(callId)
+                .then(function (call) {
+                  // callUrl = provider.getInviteLink(call);
+                  // $callUrl.resolve(callUrl);
+                  var user = [];
+                  user = call.participants.filter(function (participant) {
+                    return participant.id === userinfo.id;
+                  });
+                  if (user.length == 0) {
+                    // Check in members
+                    // In case when participants are not updated yet.
+                    // See startCall() in WebconferencingService, syncMembersAndParticipants
+                    user = Object.values(call.owner.members).filter(function (
+                      member
+                    ) {
+                      return member.id === userinfo.id;
+                    });
                     if (user.length == 0) {
                       // Check in members
                       // In case when participants are not updated yet.
@@ -382,19 +442,23 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
                         return;
                       }
                     }
+                  }
                   initCall(userinfo, call);
-                }).catch(function(err) {
+                })
+                .catch(function (err) {
+                  // $callUrl.reject(err);
                   console.log("Cannot init call:" + JSON.stringify(err));
                   alert("Error occured while initializing the call.");
                 });
-              });
             });
           });
         });
-        window.addEventListener('beforeunload', beforeunloadListener);
+      });
+      window.addEventListener("beforeunload", beforeunloadListener);
+      // return $callUrl.promise();
     };
-  }
+  };
+
   var meetApp = new MeetApp();
   meetApp.init();
- // app.init(webconferencing, provider, meetApp);
 });
