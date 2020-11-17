@@ -6,7 +6,6 @@
         "node": true
     },
     "extends": [
-        "eslint:recommended",
         "plugin:vue/recommended",
         "plugin:jest/recommended"
     ],
@@ -37,12 +36,12 @@
         "no-await-in-loop": ["error"],
         "no-caller": ["error"],
         "no-confusing-arrow": ["error"],
-        "no-console": ["warn"],
+        "no-console": ["off"],
         "no-empty-function": ["error"],
         "no-eval": ["error"],
         "no-extra-label": ["error"],
         "no-extend-native": ["error"],
-        "no-extra-parens": ["error"],
+        "no-extra-parens": ["off"],
         "no-floating-decimal": ["error"],
         "no-implied-eval": ["error"],
         "no-iterator": ["error"],
@@ -73,7 +72,7 @@
         "prefer-promise-reject-errors": ["error"],
         "prefer-rest-params": ["error"],
         "prefer-spread": ["error"],
-        "prefer-template": ["error"],
+        "prefer-template": ["warn"],
         "quotes": ["error", "double"],
         "require-await": ["error"],
         "semi": ["error", "always"],

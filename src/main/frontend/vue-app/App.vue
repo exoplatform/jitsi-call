@@ -9,7 +9,7 @@ import Call from "./components/Call.vue";
 
 export default {
   name : "App",
-  components : {
+  components: {
     Call
   }
 };
