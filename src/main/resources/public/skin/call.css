@@ -24,6 +24,10 @@ body {
   z-index: 2;
 }
 
+.invite-popup {
+  position: fixed;
+}
+
 #loader .content {
   color: white;
   width: 35%;

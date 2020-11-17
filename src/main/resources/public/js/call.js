@@ -1,4 +1,4 @@
-require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jitsi"], function($, webconferencing, provider) {
+require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jitsi", "app"], function($, webconferencing, provider, app) {
 
   var MeetApp = function() {
 
@@ -174,10 +174,22 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
           }
         }
       }
-    }
+    };
+    
+    /**
+     * Hides loader
+     */
     var hideLoader = function(){
       $("#loader").css("display", "none");
-    }
+    };
+    
+    /*
+     * Init invite popup
+     */
+   /* var initInvitePopup = function(inviteId) {
+      var url = window.location.href + "?inviteId=" + inviteId;
+      $("#invite-link").val(url);
+    };*/
 
     var subscribeCall = function(userId) {
       // Subscribe to user updates (incoming calls will be notified here)
@@ -202,12 +214,15 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
      */
     var initCall = function(userinfo, call) {
       initLoaderScreen(userinfo.id, call);
+     // initInvitePopup(call.inviteId);
       console.log("Init call with userInfo: " + JSON.stringify(userinfo));
       var apiUrl = document.getElementById("jitsi-api").getAttribute("src");
       const domain = apiUrl.substring(apiUrl.indexOf("://") + 3, apiUrl.lastIndexOf("/external_api.js"));
       var name = userinfo.firstName + " " + userinfo.lastName;
+      if (isGuest) {
+        name += " (guest)";
+      }
       getJitsiToken(name).then(function(token){        
-        var displayName = userinfo.firstName + " " + userinfo.lastName;
         var roomTitle = getRoomTitle(call);
         var tabTitle = getTabTitle(call, userinfo.id);
         window.document.title = tabTitle;
@@ -235,7 +250,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
               SETTINGS_SECTIONS: settings
             },
             userInfo: {
-              displayName : displayName
+              displayName : name
             }
           };
           api = new JitsiMeetExternalAPI(domain, options);
@@ -366,4 +381,5 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
   }
   var meetApp = new MeetApp();
   meetApp.init();
+  app.init(webconferencing, provider, meetApp);
 });
