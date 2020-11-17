@@ -8,7 +8,8 @@ var require = {
   baseUrl : "/portal/scripts/" + resorcesVersion,
   waitSeconds : 60,
   paths : {
-    "call" : "../../../jitsi/js/call"
+    "call" : "../../../jitsi/js/call",
+    "app" : "../../../jitsi/jitsi/js/jitsi-app.bundle"
   }
 };
 
