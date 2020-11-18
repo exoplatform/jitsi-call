@@ -150,6 +150,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
      * Inits loader screen. TODO: add i18n
      */
     var initLoaderScreen = function(userId, call) {
+    
       var $loader = $("#loader .content");
       var join = false;
       call.participants.forEach((part) => {
@@ -215,7 +216,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
     var initCall = function(userinfo, call) {
       initLoaderScreen(userinfo.id, call);
      // initInvitePopup(call.inviteId);
-      console.log("Init call with userInfo: " + JSON.stringify(userinfo));
+     // console.log("Init call with userInfo: " + JSON.stringify(userinfo));
       var apiUrl = document.getElementById("jitsi-api").getAttribute("src");
       const domain = apiUrl.substring(apiUrl.indexOf("://") + 3, apiUrl.lastIndexOf("/external_api.js"));
       var name = userinfo.firstName + " " + userinfo.lastName;
@@ -311,21 +312,23 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
         getExoUserInfo().then(function(data) {
             $initUser.resolve(data.userInfo, data.authToken);
           }).catch(function(err) {
-            console.log("ERR: " + JSON.stringify(err));
+            console.log("Cannot get exo userinfo: " + JSON.stringify(err));
             if(!isGuest) {
               window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId
             } else {
-             // SHOW SIGN UP PAGE
+              // Show signIn page 
               // Get firstName and lastName
               showSignInPage().then(function(settings) {
                 var guestInfo = {};
                 guestInfo.firstName = settings.firstName;
                 guestInfo.lastName = settings.lastName;
-                // TODO: generate unique id
+                // Generate unique id
                 guestInfo.id = "guest-" + settings.firstName + "-" + settings.lastName + "-" + Date.now();
                 getInternalToken().then(function(response) {
                   var token = response.token;
                   $initUser.resolve(guestInfo, token);
+                }).catch(function(err) {
+                  console.log("Cannot get internal auth token: " + JSON.stringify(err));
                 });
               });
             }     
@@ -381,5 +384,5 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
   }
   var meetApp = new MeetApp();
   meetApp.init();
-  app.init(webconferencing, provider, meetApp);
+ // app.init(webconferencing, provider, meetApp);
 });
