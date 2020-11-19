@@ -267,14 +267,18 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
            });
 
           api.addEventListener('participantRoleChanged', function(event) {
-            api.executeCommand('displayName', displayName);
+            api.executeCommand('displayName', name);
             // For recording feature
             if (event.role === "moderator") {
              isModerator = true;
+             var participantIds = call.participants.map(function(part) {
+               return part.id;
+             });
              saveCallInfo(callId, {
                owner: call.owner.id,
                group: call.owner.group,
-               moderator: userinfo.id
+               moderator: userinfo.id,
+               participants: participantIds
              });
             }
           });

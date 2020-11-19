@@ -91,6 +91,7 @@ public class CallService {
                          .claim("owner", callInfo.getOwner())
                          .claim("isGroup", callInfo.isGroup())
                          .claim("moderator", callInfo.getModerator())
+                         .claim("participants", callInfo.getParticipants())
                          .signWith(Keys.hmacShaKeyFor(exoSecret.getBytes()))
                          .compact();
       // TODO: add support for chat-rooms

@@ -1,5 +1,7 @@
 package org.exoplatform.jitsi;
 
+import java.util.List;
+
 /**
  * CallInfo is used to store basic information about the call.
  * This can be used to define a user/group who will be owner of recording. 
@@ -8,13 +10,16 @@ package org.exoplatform.jitsi;
 public class CallInfo {
 
   /** The owner. */
-  private String  owner;
+  private String       owner;
 
   /** The group. */
-  private boolean group;
+  private boolean      group;
 
   /** The moderator. */
-  private String  moderator;
+  private String       moderator;
+
+  /** The participants. */
+  private List<String> participants;
 
   /**
    * Instantiates a new call info.
@@ -29,11 +34,13 @@ public class CallInfo {
    * @param owner the owner
    * @param group the group
    * @param moderator the moderator
+   * @param participants the participants
    */
-  public CallInfo(String owner, boolean group, String moderator) {
+  public CallInfo(String owner, boolean group, String moderator, List<String> participants) {
     this.owner = owner;
     this.group = group;
     this.moderator = moderator;
+    this.participants = participants;
   }
 
   /**
@@ -88,6 +95,24 @@ public class CallInfo {
    */
   public void setModerator(String moderator) {
     this.moderator = moderator;
+  }
+
+  /**
+   * Gets the participants.
+   *
+   * @return the participants
+   */
+  public List<String> getParticipants() {
+    return participants;
+  }
+
+  /**
+   * Sets the participants.
+   *
+   * @param participants the new participants
+   */
+  public void setParticipants(List<String> participants) {
+    this.participants = participants;
   }
 
   /**
