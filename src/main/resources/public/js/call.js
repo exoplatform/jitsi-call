@@ -371,8 +371,16 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
                         return participant.id === userinfo.id;
                       });
                     if (user.length == 0) {
-                      alert("User is not allowed for this call");
-                      return;
+                      // Check in members
+                      // In case when participants are not updated yet.
+                      // See startCall() in WebconferencingService, syncMembersAndParticipants
+                      user = Object.values(call.owner.members).filter(function (member) {
+                        return member.id === userinfo.id;
+                      });
+                      if (user.length == 0) {
+                        alert("User is not allowed for this call");
+                        return;
+                      }
                     }
                   initCall(userinfo, call);
                 }).catch(function(err) {
