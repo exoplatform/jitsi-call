@@ -89,7 +89,7 @@ public class CallService {
                          .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(10)))
                          .claim("callId", callId)
                          .claim("owner", callInfo.getOwner())
-                         .claim("isGroup", callInfo.isGroup())
+                         .claim("type", callInfo.getType())
                          .claim("moderator", callInfo.getModerator())
                          .claim("participants", callInfo.getParticipants())
                          .signWith(Keys.hmacShaKeyFor(exoSecret.getBytes()))
