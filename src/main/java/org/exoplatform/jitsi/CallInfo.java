@@ -12,8 +12,8 @@ public class CallInfo {
   /** The owner. */
   private String       owner;
 
-  /** The group. */
-  private boolean      group;
+  /** The type. */
+  private String       type;
 
   /** The moderator. */
   private String       moderator;
@@ -32,13 +32,13 @@ public class CallInfo {
    * Instantiates a new call info.
    *
    * @param owner the owner
-   * @param group the group
+   * @param type the type
    * @param moderator the moderator
    * @param participants the participants
    */
-  public CallInfo(String owner, boolean group, String moderator, List<String> participants) {
+  public CallInfo(String owner, String type, String moderator, List<String> participants) {
     this.owner = owner;
-    this.group = group;
+    this.type = type;
     this.moderator = moderator;
     this.participants = participants;
   }
@@ -61,22 +61,23 @@ public class CallInfo {
     this.owner = owner;
   }
 
+  
   /**
-   * Checks if is group.
+   * Gets the type.
    *
-   * @return true, if is group
+   * @return the type
    */
-  public boolean isGroup() {
-    return group;
+  public String getType() {
+    return type;
   }
 
   /**
-   * Sets the group.
+   * Sets the type.
    *
-   * @param group the new group
+   * @param type the new type
    */
-  public void setGroup(boolean group) {
-    this.group = group;
+  public void setType(String type) {
+    this.type = type;
   }
 
   /**
@@ -122,7 +123,7 @@ public class CallInfo {
    */
   @Override
   public String toString() {
-    return "CallInfo [owner=" + owner + ", group=" + group + ", moderator=" + moderator + "]";
+    return "CallInfo [owner=" + owner + ", type=" + type + ", moderator=" + moderator + "]";
   }
 
 }

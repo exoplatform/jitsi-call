@@ -276,7 +276,7 @@ require(["SHARED/jquery", "SHARED/webConferencing", "SHARED/webConferencing_jits
              });
              saveCallInfo(callId, {
                owner: call.owner.id,
-               group: call.owner.group,
+               type: call.owner.type,
                moderator: userinfo.id,
                participants: participantIds
              });
