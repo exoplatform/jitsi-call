@@ -10,11 +10,10 @@
       dark
       type="text"
       readonly
-      style="text-overflow: ellipsis;
+      style="text-overflow: ellipsis ;
     white-space: nowrap;
     overflow: hidden;"
-      @click:append="copyUrl"
-    ></v-text-field>
+      @click:append="copyUrl"></v-text-field>
     <input
       ref="copyinput"
       :value="url"
@@ -49,12 +48,17 @@ export default {
 @import "../../skin/less/variables.less";
 .v-input {
   font-size: 14px;
-}
- input[type="text"] {
+  .v-text-field__slot {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+  }
 }
+//  input[type="text"] {
+//     text-overflow: ellipsis;
+//     white-space: nowrap;
+//     overflow: hidden;
+// }
 #invite-popup {
   position: absolute;
   top: 10%;
@@ -64,6 +68,13 @@ export default {
   font-weight: bold;
   &.btn-copy {
     cursor: pointer;
+    &.v-text-field {
+      input[type="text"] {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+    }
   }
   .v-text-field {
     width: 370px;
