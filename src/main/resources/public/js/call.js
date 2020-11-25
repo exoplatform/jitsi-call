@@ -4,25 +4,23 @@ require([
   "SHARED/webConferencing_jitsi",
   "app",
 ], function ($, webconferencing, provider, app) {
+
   var MeetApp = function () {
     var callId;
     var isStopping = false;
     var isGuest = false;
-    var inviteId;
+    //var inviteId;
     var authToken;
     var isStopped = false;
     var api;
-    var isModerator;
 
     var getUrlParameter = function (sParam) {
       var sPageURL = window.location.search.substring(1),
         sURLVariables = sPageURL.split("&"),
         sParameterName,
         i;
-
       for (i = 0; i < sURLVariables.length; i++) {
         sParameterName = sURLVariables[i].split("=");
-
         if (sParameterName[0] === sParam) {
           return sParameterName[1] === undefined
             ? true
@@ -95,7 +93,7 @@ require([
     };
 
     var beforeunloadListener = function () {
-      if (!isStopped) {
+      if (callId && !isStopped) {
         isStopping = true;
         webconferencing.updateCall(callId, "leaved");
       }
@@ -201,24 +199,20 @@ require([
 
     var subscribeCall = function (userId) {
       // Subscribe to user updates (incoming calls will be notified here)
-      webconferencing.onUserUpdate(
-        userId,
-        function (update) {
-          // This connector cares only about own provider events
-          if (update.providerType == "jitsi") {
-            if (update.eventType == "call_state" && update.callId == callId) {
-              if (update.callState == "stopped" && !isStopping) {
-                isStopped = true;
-                api.dispose();
-                window.close();
-              }
+      webconferencing.onUserUpdate(userId, update => {
+        // This connector cares only about own provider events
+        if (update.providerType == "jitsi") {
+          if (update.eventType == "call_state" && update.callId == callId) {
+            if (update.callState == "stopped" && !isStopping) {
+              isStopped = true;
+              api.dispose();
+              window.close();
             }
-          } // it's other provider type - skip it
-        },
-        function (err) {
-          log.error("Failed to listen on user updates", err);
-        }
-      );
+          }
+        } // it's other provider type - skip it
+      }, err => {
+        log.error("Failed to listen on user updates", err);
+      });
     };
 
     /**
@@ -237,7 +231,7 @@ require([
       if (isGuest) {
         name += " (guest)";
       }
-      getJitsiToken(name).then(function (token) {
+      getJitsiToken(name).then(token => {        
         var roomTitle = getRoomTitle(call);
         var tabTitle = getTabTitle(call, userinfo.id);
         window.document.title = tabTitle;
@@ -245,6 +239,7 @@ require([
         if (isGuest) {
           settings.push("profile");
         }
+        app.init();
         const options = {
           roomName: callId,
           width: "100%",
@@ -254,7 +249,7 @@ require([
           onload: hideLoader,
           configOverwrite: {
             subject: roomTitle,
-            prejoinPageEnabled: true,
+            prejoinPageEnabled: true
           },
           interfaceConfigOverwrite: {
             TOOLBAR_BUTTONS: [
@@ -272,55 +267,56 @@ require([
               "videoquality",
               "tileview",
               "videobackgroundblur",
-              "mute-everyone",
+              "mute-everyone"
             ],
             JITSI_WATERMARK_LINK: "",
-            SETTINGS_SECTIONS: settings,
+            SETTINGS_SECTIONS: settings
           },
           userInfo: {
-            displayName: name,
+            displayName: name
           }
         };
         api = new JitsiMeetExternalAPI(domain, options);
         webconferencing.updateCall(callId, "joined");
         console.log("Joined to the call " + callId);
         subscribeCall(userinfo.id);
-        api.on("readyToClose", function (event) {
+        api.on("readyToClose", event => {
           isStopped = true;
-          webconferencing.updateCall(callId, "leaved").done(function () {
+          webconferencing.updateCall(callId, "leaved").then(() => {
             api.dispose();
             window.close();
           });
         });
-        api.addEventListener("participantRoleChanged", function (event) {
+        api.addEventListener("participantRoleChanged", event => {
           const inviteLink = provider.getInviteLink(call);
-          app.initCopy(inviteLink);
-          api.executeCommand('displayName', displayName);
+          app.initCallLink(inviteLink);
+          api.executeCommand("displayName"", name);
           // For recording feature
           if (event.role === "moderator") {
            isModerator = true;
-           var participantIds = call.participants.map(function(part) {
+           var participantIds = call.participants.map(part => {
              return part.id;
            });
            saveCallInfo(callId, {
              owner: call.owner.id,
              type: call.owner.type,
+             //group: call.owner.group, // TODO result of merge?
              moderator: userinfo.id,
              participants: participantIds
            });
           }
-        });          
+        });
       });
     };
 
     /**
      * Shows sign in page MOCK
      */
-    var showSignInPage = function () {
+    var showSignInPage = function() {
       var $promise = $.Deferred();
       var settings = {
-        firstName: "John",
-        lastName: "Doe",
+        firstName : "John",
+        lastName : "Doe"
       };
       $promise.resolve(settings);
       return $promise;
@@ -330,59 +326,50 @@ require([
      * Inits current user and context
      */
     this.init = function () {
-      // var $callUrl = $.Deferred();
       callId = getCallId();
       var $initUser = $.Deferred();
-      inviteId = getUrlParameter("inviteId");
+      let inviteId = getUrlParameter("inviteId");
       if (inviteId) {
-        let trimmedUrl = window.location.href.substring(
-          0,
-          window.location.href.indexOf("?")
-        );
+        let trimmedUrl = window.location.href.substring(0, window.location.href.indexOf("?"));
         window.history.pushState({}, "", trimmedUrl);
         isGuest = true;
       }
-      getExoUserInfo()
-        .then(function (data) {
-          $initUser.resolve(data.userInfo, data.authToken);
-        })
-        .catch(function (err) {
-          console.log("Cannot get exo userinfo: " + JSON.stringify(err));
-          if (!isGuest) {
-            window.document.location.href =
-              "/portal/login?initialURI=/jitsi/meet/" + callId;
-          } else {
-            // Show signIn page
-            // Get firstName and lastName
-            showSignInPage().then(function (settings) {
-              var guestInfo = {};
-              guestInfo.firstName = settings.firstName;
-              guestInfo.lastName = settings.lastName;
-              // Generate unique id
-              guestInfo.id =
-                "guest-" +
-                settings.firstName +
-                "-" +
-                settings.lastName +
-                "-" +
-                Date.now();
-              getInternalToken()
-                .then(function (response) {
-                  var token = response.token;
-                  $initUser.resolve(guestInfo, token);
-                })
-                .catch(function (err) {
-                  console.log(
-                    "Cannot get internal auth token: " + JSON.stringify(err)
-                  );
-                });
+      getExoUserInfo().then(data => {
+        $initUser.resolve(data.userInfo, data.authToken);
+      }).catch(err => {
+        console.log("Cannot get exo userinfo: " + JSON.stringify(err));
+        if (!isGuest) {
+          window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId;
+        } else {
+          // Show signIn page
+          // Get firstName and lastName
+          showSignInPage().then(settings => {
+            var guestInfo = {};
+            guestInfo.firstName = settings.firstName;
+            guestInfo.lastName = settings.lastName;
+            // Generate unique id
+            guestInfo.id =
+              "guest-" +
+              settings.firstName +
+              "-" +
+              settings.lastName +
+              "-" +
+              Date.now();
+            getInternalToken().then(response => {
+              var token = response.token;
+              $initUser.resolve(guestInfo, token);
+            }).catch(err => {
+              console.log(
+                "Cannot get internal auth token: " + JSON.stringify(err)
+              );
             });
-          }
-        });
+          });
+        }
+      });
 
       $initUser.then(function (userinfo, token) {
         authToken = token;
-        getContextInfo(userinfo.id).then(function (contextInfo) {
+        getContextInfo(userinfo.id).then(contextInfo => {
           getSettings().then(function (settings) {
             eXo.env.portal.profileOwner = userinfo.id;
             webconferencing.init(userinfo, contextInfo);
@@ -391,71 +378,49 @@ require([
             webconferencing.update();
             var $promise = $.Deferred();
             if (isGuest) {
-              webconferencing
-                .checkInvite(callId, inviteId, userinfo.id)
-                .then(function (result) {
-                  if (result.allowed) {
-                    webconferencing
-                      .addGuest(callId, userinfo.id)
-                      .then(function () {
-                        $promise.resolve();
-                      });
-                  } else {
+              webconferencing.checkInvite(callId, inviteId, userinfo.id).then(result => {
+                if (result.allowed) {
+                  webconferencing.addGuest(callId, userinfo.id).then(() => {
                     $promise.resolve();
-                    console.log("Guest is not invited to this call");
-                  }
-                })
-                .catch(function (err) {
-                  console.log("Cannot check invite:" + JSON.stringify(err));
-                });
+                  });
+                } else {
+                  $promise.resolve();
+                  console.log("Guest is not invited to this call");
+                }
+              }).catch(err => {
+                console.log("Cannot check invite:" + JSON.stringify(err));
+              });
             } else {
               $promise.resolve();
             }
-            $promise.then(function () {
-              webconferencing
-                .getCall(callId)
-                .then(function (call) {
-                  // callUrl = provider.getInviteLink(call);
-                  // $callUrl.resolve(callUrl);
-                  var user = [];
-                  user = call.participants.filter(function (participant) {
-                    return participant.id === userinfo.id;
+            $promise.then(() => {
+              webconferencing.getCall(callId).then(call => {
+                var user = [];
+                user = call.participants.filter(participant => {
+                  return participant.id === userinfo.id;
+                });
+                if (user.length == 0) {
+                  // Check in members
+                  // In case when participants are not updated yet.
+                  // See startCall() in WebconferencingService, syncMembersAndParticipants
+                  user = Object.values(call.owner.members).filter(member => {
+                    return member.id === userinfo.id;
                   });
                   if (user.length == 0) {
-                    // Check in members
-                    // In case when participants are not updated yet.
-                    // See startCall() in WebconferencingService, syncMembersAndParticipants
-                    user = Object.values(call.owner.members).filter(function (
-                      member
-                    ) {
-                      return member.id === userinfo.id;
-                    });
-                    if (user.length == 0) {
-                      // Check in members
-                      // In case when participants are not updated yet.
-                      // See startCall() in WebconferencingService, syncMembersAndParticipants
-                      user = Object.values(call.owner.members).filter(function (member) {
-                        return member.id === userinfo.id;
-                      });
-                      if (user.length == 0) {
-                        alert("User is not allowed for this call");
-                        return;
-                      }
-                    }
+                    alert("User is not allowed for this call");
+                    return;
                   }
-                  initCall(userinfo, call);
-                })
-                .catch(function (err) {
-                  // $callUrl.reject(err);
-                  console.log("Cannot init call:" + JSON.stringify(err));
-                  alert("Error occured while initializing the call.");
-                });
+                }
+                initCall(userinfo, call);
+              }).catch(err => {
+                console.log("Cannot init call:" + JSON.stringify(err));
+                alert("Error occured while initializing the call.");
+              });
             });
           });
         });
       });
       window.addEventListener("beforeunload", beforeunloadListener);
-      // return $callUrl.promise();
     };
   };
 
