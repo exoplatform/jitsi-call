@@ -34,11 +34,11 @@ export function init() {
     vuetify,
     render: function(h) {
       return h(App);
-    },
+    }
   });
 }
 
-export function initCopy(url) {
+export function initCallLink(url) {
   // getting locale ressources
   // return exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
   return new Vue({
@@ -53,6 +53,6 @@ export function initCopy(url) {
           url: url,
         }
       });
-    },
+    }
   });
 }
