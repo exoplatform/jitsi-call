@@ -3,9 +3,9 @@ require([
   "SHARED/webConferencing",
   "SHARED/webConferencing_jitsi",
   "app",
-], function ($, webconferencing, provider, app) {
+], function($, webconferencing, provider, app) {
 
-  var MeetApp = function () {
+  var MeetApp = function() {
     var callId;
     var isStopping = false;
     var isGuest = false;
@@ -14,7 +14,7 @@ require([
     var isStopped = false;
     var api;
 
-    var getUrlParameter = function (sParam) {
+    var getUrlParameter = function(sParam) {
       var sPageURL = window.location.search.substring(1),
         sURLVariables = sPageURL.split("&"),
         sParameterName,
@@ -30,7 +30,7 @@ require([
     };
 
     // Request userinfo of exo user via Gateway
-    var getExoUserInfo = function () {
+    var getExoUserInfo = function() {
       return $.get({
         type: "GET",
         url: "/jitsi/portal/rest/jitsi/userinfo",
@@ -40,7 +40,7 @@ require([
 
     // Save call info via Gateway
     // TODO: Secure
-    var saveCallInfo = function (callId, callInfo) {
+    var saveCallInfo = function(callId, callInfo) {
       return $.post({
         url: "/jitsi/api/v1/calls/" + callId,
         data: JSON.stringify(callInfo),
@@ -51,10 +51,10 @@ require([
     };
 
     // Request contextinfo
-    var getContextInfo = function (userId) {
+    var getContextInfo = function(userId) {
       return $.get({
         type: "GET",
-        beforeSend: function (request) {
+        beforeSend: function(request) {
           request.setRequestHeader("X-Exoplatform-Auth", authToken);
         },
         url: "/portal/rest/jitsi/context/" + userId,
@@ -63,10 +63,10 @@ require([
     };
 
     // Request provider settings
-    var getSettings = function () {
+    var getSettings = function() {
       return $.get({
         type: "GET",
-        beforeSend: function (request) {
+        beforeSend: function(request) {
           request.setRequestHeader("X-Exoplatform-Auth", authToken);
         },
         url: "/portal/rest/jitsi/settings",
@@ -75,7 +75,7 @@ require([
     };
 
     // Request internal auth token for guests
-    var getInternalToken = function () {
+    var getInternalToken = function() {
       return $.get({
         type: "GET",
         url: "/jitsi/portal/rest/jitsi/token",
@@ -84,7 +84,7 @@ require([
     };
 
     // Request provider settings
-    var getJitsiToken = function (username) {
+    var getJitsiToken = function(username) {
       return $.get({
         type: "GET",
         url: "/jitsi/api/v1/token/" + username,
@@ -92,7 +92,7 @@ require([
       });
     };
 
-    var beforeunloadListener = function () {
+    var beforeunloadListener = function() {
       if (callId && !isStopped) {
         isStopping = true;
         webconferencing.updateCall(callId, "leaved");
@@ -102,7 +102,7 @@ require([
       }
     };
 
-    var getCallId = function () {
+    var getCallId = function() {
       var currentURL = window.location.href;
       if (currentURL.indexOf("?") !== -1) {
         return currentURL.substring(
@@ -117,7 +117,7 @@ require([
     /**
      * Generate room title TODO: add i18n
      */
-    var getRoomTitle = function (call) {
+    var getRoomTitle = function(call) {
       if (call.owner.group) {
         return call.owner.title;
       }
@@ -135,7 +135,7 @@ require([
     /**
      * Generate tab title TODO: add i18n
      */
-    var getTabTitle = function (call, userId) {
+    var getTabTitle = function(call, userId) {
       if (call.owner.group) {
         return "Call: " + call.owner.title;
       }
@@ -185,7 +185,7 @@ require([
     /**
      * Hides loader
      */
-    var hideLoader = function () {
+    var hideLoader = function() {
       $("#loader").css("display", "none");
     };
 
@@ -197,7 +197,7 @@ require([
       $("#invite-link").val(url);
     };*/
 
-    var subscribeCall = function (userId) {
+    var subscribeCall = function(userId) {
       // Subscribe to user updates (incoming calls will be notified here)
       webconferencing.onUserUpdate(userId, update => {
         // This connector cares only about own provider events
@@ -218,7 +218,7 @@ require([
     /**
      * Initializes the call
      */
-    var initCall = function (userinfo, call) {
+    var initCall = function(userinfo, call) {
       initLoaderScreen(userinfo.id, call);
      // initInvitePopup(call.inviteId);
      // console.log("Init call with userInfo: " + JSON.stringify(userinfo));
@@ -325,7 +325,7 @@ require([
     /**
      * Inits current user and context
      */
-    this.init = function () {
+    this.init = function() {
       callId = getCallId();
       var $initUser = $.Deferred();
       let inviteId = getUrlParameter("inviteId");
@@ -367,10 +367,10 @@ require([
         }
       });
 
-      $initUser.then(function (userinfo, token) {
+      $initUser.then(function(userinfo, token) {
         authToken = token;
         getContextInfo(userinfo.id).then(contextInfo => {
-          getSettings().then(function (settings) {
+          getSettings().then(function(settings) {
             eXo.env.portal.profileOwner = userinfo.id;
             webconferencing.init(userinfo, contextInfo);
             provider.configure(settings);
