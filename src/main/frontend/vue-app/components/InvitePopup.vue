@@ -1,7 +1,7 @@
 <template>
   <div id="invite-popup">
     <v-text-field
-      :value="textLink"
+      :value="url"
       background-color="#0376da"
       class="btn-copy"
       append-icon="mdi-content-copy"
@@ -10,6 +10,9 @@
       dark
       type="text"
       readonly
+      style="text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;"
       @click:append="copyUrl"
     ></v-text-field>
     <input
@@ -46,6 +49,11 @@ export default {
 @import "../../skin/less/variables.less";
 .v-input {
   font-size: 14px;
+}
+ input[type="text"] {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 #invite-popup {
   position: absolute;
