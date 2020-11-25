@@ -13,6 +13,7 @@
       style="text-overflow: ellipsis ;
     white-space: nowrap;
     overflow: hidden;"
+      @click="copyUrl"
       @click:append="copyUrl"></v-text-field>
     <input
       ref="copyinput"
@@ -46,14 +47,26 @@ export default {
 </script>
 <style lang="less" scoped>
 @import "../../skin/less/variables.less";
-.v-input {
+ .btn-copy {
+   &.v-input {
   font-size: 14px;
   .v-text-field__slot {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
   }
+  }
 }
+ .btn-copy {
+    cursor: pointer;
+    &.v-text-field {
+      input[type="text"] {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+    }
+  }
 //  input[type="text"] {
 //     text-overflow: ellipsis;
 //     white-space: nowrap;
