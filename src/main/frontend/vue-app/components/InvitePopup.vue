@@ -91,7 +91,7 @@ export default {
 }
 #invite-popup {
   position: absolute;
-  top: 10%;
+  bottom: 10%;
   left: 50%;
   transform: translateX(-50%);
   font-family: Helvetica, arial, sans-serif;
