@@ -3,24 +3,24 @@
     <v-text-field
       :value="url"
       background-color="#0376da"
-      class="btn-copy"
+      class="btn-copy text-truncate"
       append-icon="mdi-content-copy"
       solo
+      single-line
       hide-details
       dark
       type="text"
       readonly
-      style="text-overflow: ellipsis ;
-    white-space: nowrap;
-    overflow: hidden;"
       @click="copyUrl"
-      @click:append="copyUrl"></v-text-field>
+      @click:append="copyUrl"
+    ></v-text-field>
     <input
       ref="copyinput"
       :value="url"
       type="text"
       style="opacity: 0; width: 160px"
-      class="btn-copy" />
+      class="btn-copy"
+    />
   </div>
 </template>
 <script>
@@ -34,11 +34,21 @@ export default {
   },
   data() {
     return {
-      textLink: "Copy meeting link"
+      textLink: "Copy meeting link",
+      // isClicked: false
     };
   },
+  // computed: {
+  //   color() {
+  //     return this.isClicked ? "#46a546" : "#0376da";
+  //   },
+  //   title() {
+  //     return this.isClicked ? "Link copied to clipboard" : this.url;
+  //   }
+  // },
   methods: {
     copyUrl() {
+      // this.isClicked = !this.isClicked;
       this.$refs.copyinput.select();
       document.execCommand("copy");
     }
@@ -47,31 +57,16 @@ export default {
 </script>
 <style lang="less" scoped>
 @import "../../skin/less/variables.less";
- .btn-copy {
-   &.v-input {
-  font-size: 14px;
-  .v-text-field__slot {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-  }
-}
- .btn-copy {
-    cursor: pointer;
+.btn-copy {
+  &.v-input {
     &.v-text-field {
-      input[type="text"] {
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-      }
+      font-size: 14px;
     }
   }
-//  input[type="text"] {
-//     text-overflow: ellipsis;
-//     white-space: nowrap;
-//     overflow: hidden;
-// }
+}
+.btn-copy {
+  cursor: pointer; 
+}
 #invite-popup {
   position: absolute;
   top: 10%;
@@ -81,17 +76,19 @@ export default {
   font-weight: bold;
   &.btn-copy {
     cursor: pointer;
-    &.v-text-field {
-      input[type="text"] {
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-      }
-    }
   }
   .v-text-field {
     width: 370px;
     cursor: pointer;
   }
 }
+</style>
+<style scoped>
+.btn-copy.v-text-field >>> input{
+      text-overflow: ellipsis;
+      display: inline-block !important;
+      white-space: nowrap;
+      overflow: hidden;
+      margin-right: 25px;
+    }
 </style>
