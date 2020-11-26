@@ -2,8 +2,9 @@
   <div id="invite-popup">
     <v-text-field
       :value="url"
+      :style="linkStyle"
       background-color="#0376da"
-      class="btn-copy text-truncate"
+      class="btn-copy"
       append-icon="mdi-content-copy"
       solo
       single-line
@@ -13,6 +14,19 @@
       readonly
       @click="copyUrl"
       @click:append="copyUrl"
+    ></v-text-field>
+    <v-text-field
+      :value="textLink"
+      :style="style"
+      background-color="#46a546"
+      class="btn-copy"
+      append-icon="mdi-check"
+      solo
+      single-line
+      hide-details
+      dark
+      type="text"
+      readonly
     ></v-text-field>
     <input
       ref="copyinput"
@@ -34,21 +48,29 @@ export default {
   },
   data() {
     return {
-      textLink: "Copy meeting link",
-      // isClicked: false
+      textLink: "Link copied to clipboard",
+      isClicked: false
     };
   },
-  // computed: {
+  computed: {
+    style() {
+      return this.isClicked ? "display: block" : "display: none";
+    },
+    linkStyle() {
+      return this.isClicked ?  "display: none" : "display: block";
+    }
   //   color() {
   //     return this.isClicked ? "#46a546" : "#0376da";
   //   },
   //   title() {
   //     return this.isClicked ? "Link copied to clipboard" : this.url;
   //   }
-  // },
+  },
   methods: {
     copyUrl() {
-      // this.isClicked = !this.isClicked;
+      this.isClicked = !this.isClicked;
+      // eslint-disable-next-line no-magic-numbers
+      setTimeout(() => this.isClicked = !this.isClicked, 5000);
       this.$refs.copyinput.select();
       document.execCommand("copy");
     }
