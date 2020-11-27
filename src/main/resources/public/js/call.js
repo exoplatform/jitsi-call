@@ -289,7 +289,7 @@ require([
         });
         api.addEventListener("participantRoleChanged", event => {
           //const inviteLink = provider.getInviteLink(call);
-          //app.initCallLink(inviteLink);
+          app.initCallLink(inviteLink);
           api.executeCommand("displayName", name);
           // For recording feature
           if (event.role === "moderator") {
