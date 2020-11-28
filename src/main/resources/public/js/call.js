@@ -288,7 +288,7 @@ require([
           });
         });
         api.addEventListener("participantRoleChanged", event => {
-          //const inviteLink = provider.getInviteLink(call);
+          const inviteLink = provider.getInviteLink(call);
           app.initCallLink(inviteLink);
           api.executeCommand("displayName", name);
           // For recording feature
