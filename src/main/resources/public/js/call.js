@@ -3,9 +3,12 @@ require([
   "SHARED/webConferencing",
   "SHARED/webConferencing_jitsi",
   "app",
-], function($, webconferencing, provider, app) {
+], function($, webConferencing, provider, app) {
 
-  var MeetApp = function() {
+  /** For debug logging. */
+  const log = webConferencing.getLog("jitsi").prefix("call");
+
+  function MeetApp() {
     var callId;
     var isStopping = false;
     var isGuest = false;
@@ -95,7 +98,7 @@ require([
     var beforeunloadListener = function() {
       if (callId && !isStopped) {
         isStopping = true;
-        webconferencing.updateCall(callId, "leaved");
+        webConferencing.updateCall(callId, "leaved");
       }
       if (api) {
         api.dispose();
@@ -197,9 +200,9 @@ require([
       $("#invite-link").val(url);
     };*/
 
-    var subscribeCall = function(userId) {
+    var subscribeUser = function(userId) {
       // Subscribe to user updates (incoming calls will be notified here)
-      webconferencing.onUserUpdate(userId, update => {
+      webConferencing.onUserUpdate(userId, update => {
         // This connector cares only about own provider events
         if (update.providerType == "jitsi") {
           if (update.eventType == "call_state" && update.callId == callId) {
@@ -220,8 +223,7 @@ require([
      */
     var initCall = function(userinfo, call) {
       initLoaderScreen(userinfo.id, call);
-     // initInvitePopup(call.inviteId);
-     // console.log("Init call with userInfo: " + JSON.stringify(userinfo));
+      // initInvitePopup(call.inviteId);
       var apiUrl = document.getElementById("jitsi-api").getAttribute("src");
       const domain = apiUrl.substring(
         apiUrl.indexOf("://") + 3,
@@ -277,12 +279,11 @@ require([
           }
         };
         api = new JitsiMeetExternalAPI(domain, options);
-        webconferencing.updateCall(callId, "joined");
-        console.log("Joined to the call " + callId);
-        subscribeCall(userinfo.id);
+        webConferencing.updateCall(callId, "joined");
+        log.info("Joined to the call " + callId + " by " + userinfo.id);
         api.on("readyToClose", event => {
           isStopped = true;
-          webconferencing.updateCall(callId, "leaved").then(() => {
+          webConferencing.updateCall(callId, "leaved").then(() => {
             api.dispose();
             window.close();
           });
@@ -337,12 +338,9 @@ require([
       getExoUserInfo().then(data => {
         $initUser.resolve(data.userInfo, data.authToken);
       }).catch(err => {
-        console.log("Cannot get exo userinfo: " + JSON.stringify(err));
-        if (!isGuest) {
-          window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId;
-        } else {
-          // Show signIn page
-          // Get firstName and lastName
+        if (isGuest) {
+          log.debug("Cannot get user info for call invitation: " + callId + " (" + inviteId + "), treating the user as a guest", err);
+          // Show signIn page: get firstName and lastName
           showSignInPage().then(settings => {
             var guestInfo = {};
             guestInfo.firstName = settings.firstName;
@@ -359,11 +357,12 @@ require([
               var token = response.token;
               $initUser.resolve(guestInfo, token);
             }).catch(err => {
-              console.log(
-                "Cannot get internal auth token: " + JSON.stringify(err)
-              );
+              log.error("Cannot get internal auth token for call: " + callId + " user: " + guestInfo.id, err);
             });
           });
+        } else {
+          log.warn("Cannot get user info for call: " + callId + ", redirecting to portal login page", err);
+          window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId;
         }
       });
 
@@ -371,30 +370,34 @@ require([
         authToken = token;
         getContextInfo(userinfo.id).then(contextInfo => {
           getSettings().then(function(settings) {
+            // General configuration to reflect the PLF environment  
             eXo.env.portal.profileOwner = userinfo.id;
-            webconferencing.init(userinfo, contextInfo);
+            webConferencing.init(userinfo, contextInfo);
+            settings.isCallApp = true; // Mark the settings as for a call page 
             provider.configure(settings);
-            webconferencing.addProvider(provider);
-            webconferencing.update();
+            webConferencing.addProvider(provider);
+            // XXX Subscribe to the call updates sooner to let Comet to initialize before making rmeote calls!
+            subscribeUser(userinfo.id);
             var $promise = $.Deferred();
             if (isGuest) {
-              webconferencing.checkInvite(callId, inviteId, userinfo.id).then(result => {
+              webConferencing.checkInvite(callId, inviteId, userinfo.id).then(result => {
                 if (result.allowed) {
-                  webconferencing.addGuest(callId, userinfo.id).then(() => {
+                  webConferencing.addGuest(callId, userinfo.id).then(() => {
                     $promise.resolve();
                   });
                 } else {
                   $promise.resolve();
-                  console.log("Guest is not invited to this call");
+                  log.warn("Guest has been not invited to call: " + callId + ", guest: " + userinfo.id + 
+                    " (" + userinfo.firstName + " " + userinfo.lastName + ")");
                 }
               }).catch(err => {
-                console.log("Cannot check invite:" + JSON.stringify(err));
+                log.error("Failed to check call invitation: " + callId + " (" + inviteId + ")", err);
               });
             } else {
               $promise.resolve();
             }
             $promise.then(() => {
-              webconferencing.getCall(callId).then(call => {
+              webConferencing.getCall(callId).then(call => {
                 var user = [];
                 user = call.participants.filter(participant => {
                   return participant.id === userinfo.id;
@@ -413,8 +416,8 @@ require([
                 }
                 initCall(userinfo, call);
               }).catch(err => {
-                console.log("Cannot init call:" + JSON.stringify(err));
-                alert("Error occured while initializing the call.");
+                log.error("Cannot init call: " + callId + " user: " + userinfo.id, err);
+                alert("Error occured while initializing the call."); // TODO i18n
               });
             });
           });
@@ -424,6 +427,6 @@ require([
     };
   };
 
-  var meetApp = new MeetApp();
+  const meetApp = new MeetApp();
   meetApp.init();
 });
