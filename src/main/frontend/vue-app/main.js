@@ -1,6 +1,8 @@
+// import "material-design-icons-iconfont/dist/material-design-icons.css";
 import Vue from "vue";
 import App from "./App.vue";
 import InvitePopup from "./components/InvitePopup.vue";
+import SignInPopup from "./components/SignInPopup.vue";
 import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
 
@@ -52,6 +54,20 @@ export function initCallLink(url) {
         props: {
           url: url,
         }
+      });
+    }
+  });
+}
+
+export function initSignInPopup() {
+  return new Vue({
+    el: "#signin-popup",
+    components: {
+      SignInPopup
+    },
+    vuetify,
+    render: function(h) {
+      return h(SignInPopup, {
       });
     }
   });
