@@ -15,8 +15,12 @@ let config = {
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: ["vue-style-loader", "css-loader"],
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg|eot|ttf|woff|woff2)$/i,
+        loader: "url-loader",
       },
       {
         test: /\.less$/,
@@ -38,14 +42,14 @@ let config = {
           ],
         }),
       },
-      {
-        test: /\.(eot|svg|ttf|woff|woff2)(\?.*)/,
-        use: [
-          {
-            loader: "file-loader",
-          },
-        ],
-      },
+      // {
+      //   test: /\.(eot|svg|ttf|woff|woff2)(\?.*)/,
+      //   use: [
+      //     {
+      //       loader: "file-loader"
+      //     },
+      //   ],
+      // },
       {
         test: /\.js$/,
         exclude: /node_modules/,

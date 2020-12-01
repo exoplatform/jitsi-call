@@ -251,7 +251,10 @@ require([
           onload: hideLoader,
           configOverwrite: {
             subject: roomTitle,
-            prejoinPageEnabled: true
+            prejoinPageEnabled: true,
+            requireDisplayName: true,
+            enableWelcomePage: true,
+            enableClosePage: true,
           },
           interfaceConfigOverwrite: {
             TOOLBAR_BUTTONS: [
@@ -314,6 +317,7 @@ require([
      * Shows sign in page MOCK
      */
     var showSignInPage = function() {
+      // app.initSignInPopup();
       var $promise = $.Deferred();
       var settings = {
         firstName : "Anonymous",
@@ -335,8 +339,11 @@ require([
         window.history.pushState({}, "", trimmedUrl);
         isGuest = true;
       }
+
       getExoUserInfo().then(data => {
         $initUser.resolve(data.userInfo, data.authToken);
+        console.log(data);
+
       }).catch(err => {
         if (isGuest) {
           log.debug("Cannot get user info for call invitation: " + callId + " (" + inviteId + "), treating the user as a guest", err);

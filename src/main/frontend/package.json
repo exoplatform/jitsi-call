@@ -41,6 +41,9 @@
     "jsdom": "^13.0.0",
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
+    "material-design-icons-iconfont": "^6.1.0",
+    "style-loader": "^2.0.0",
+    "url-loader": "^4.1.1",
     "url-parse": "^1.4.3",
     "vue": "^2.5.16",
     "vue-jest": "^3.0.5",
@@ -54,7 +57,6 @@
   },
   "dependencies": {
     "anchorme": "^1.1.2",
-    "autosize": "^4.0.2",
-    "material-design-icons-iconfont": "^6.1.0"
+    "autosize": "^4.0.2"
   }
 }
