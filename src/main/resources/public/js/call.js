@@ -316,15 +316,16 @@ require([
     /**
      * Shows sign in page MOCK
      */
-    var showSignInPage = function() {
+    var showSignInPage = function(callId) {
       // app.initSignInPopup();
-      var $promise = $.Deferred();
-      var settings = {
-        firstName : "Anonymous",
-        lastName : "Participant"
-      };
-      $promise.resolve(settings);
-      return $promise;
+      // var $promise = $.Deferred();
+      // var settings = {
+      //   firstName : "John",
+      //   lastName : "Doe"
+      // };
+      // $promise.resolve(settings);
+      // return $promise;
+      return window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId;
     };
 
     /**
@@ -346,28 +347,11 @@ require([
         if (isGuest) {
           log.debug("Cannot get user info for call invitation: " + callId + " (" + inviteId + "), treating the user as a guest", err);
           // Show signIn page: get firstName and lastName
-          app.initSignInPopup().then(() => {
-            showSignInPage().then(settings => {
-              var guestInfo = {};
-              guestInfo.firstName = settings.firstName;
-              guestInfo.lastName = settings.lastName;
-              // Generate unique id
-              const lastName = guestInfo.lastName.includes(" ") ? guestInfo.lastName.split(" ").join("") : guestInfo.lastName;
-              guestInfo.id =
-                "guest-" +
-                settings.firstName +
-                "-" +
-                lastName +
-                "-" +
-                Date.now();
-              getInternalToken().then(response => {
-                var token = response.token;
-                $initUser.resolve(guestInfo, token);
-              }).catch(err => {
-                log.error("Cannot get internal auth token for call: " + callId + " user: " + guestInfo.id, err);
-              });
-            });
-          }).catch(guestData => {
+          app.initSignInPopup(app).then(() => {
+            // window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId;
+            showSignInPage(callId);
+          })
+          .catch(guestData => {
             var guestInfo = {};
               guestInfo.firstName = guestData.firstName;
               guestInfo.lastName = guestData.lastName;
@@ -389,7 +373,8 @@ require([
           });
         } else {
           log.warn("Cannot get user info for call: " + callId + ", redirecting to portal login page", err);
-          window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId;
+          // window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId;
+          showSignInPage(callId);
         }
       });
 

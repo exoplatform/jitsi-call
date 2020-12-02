@@ -61,7 +61,8 @@ export function initCallLink(url) {
   });
 }
 
-export function initSignInPopup() {
+export function initSignInPopup(app) {
+  console.log(app, this);
   const result = new Promise((resolve, reject) => {
     new Vue({
       el: "#signin-popup",
