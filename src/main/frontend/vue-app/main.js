@@ -12,9 +12,11 @@ const vuetify = new Vuetify({
   dark: true,
   icons: {
     iconfont: "mdi",
-    // values: {
-    //   product: "mdi-copy",
-    // }
+    values: {
+      copy: "mdi-content-copy",
+      check: "mdi-check",
+      account: "mdi-account"
+    }
   },
 });
 
@@ -36,7 +38,7 @@ export function init() {
     vuetify,
     render: function(h) {
       return h(App);
-    }
+    },
   });
 }
 
@@ -53,22 +55,33 @@ export function initCallLink(url) {
       return h(InvitePopup, {
         props: {
           url: url,
-        }
+        },
       });
-    }
+    },
   });
 }
 
 export function initSignInPopup() {
-  return new Vue({
-    el: "#signin-popup",
-    components: {
-      SignInPopup
-    },
-    vuetify,
-    render: function(h) {
-      return h(SignInPopup, {
-      });
-    }
+  const result = new Promise((resolve, reject) => {
+    new Vue({
+      el: "#signin-popup",
+      components: {
+        SignInPopup,
+      },
+      vuetify,
+      render: function(h) {
+        return h(SignInPopup, {
+          on: {
+            exouserjoin: function(){
+              resolve();
+            },
+            guestjoin: function($event){
+              reject($event);
+            },
+          }
+        });
+      },
+    });
   });
+  return result;
 }

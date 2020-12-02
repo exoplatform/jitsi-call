@@ -5,7 +5,7 @@
       :style="linkStyle"
       background-color="#0376da"
       class="btn-copy"
-      append-icon="mdi-content-copy"
+      append-icon="$copy"
       solo
       single-line
       hide-details
@@ -20,7 +20,7 @@
       :style="style"
       background-color="#46a546"
       class="btn-copy"
-      append-icon="mdi-check"
+      append-icon="$check"
       solo
       single-line
       hide-details
