@@ -252,9 +252,9 @@ require([
           configOverwrite: {
             subject: roomTitle,
             prejoinPageEnabled: true,
-            requireDisplayName: true,
-            enableWelcomePage: true,
-            enableClosePage: true,
+            //requireDisplayName: true,
+            //enableWelcomePage: true,
+            //enableClosePage: true,
           },
           interfaceConfigOverwrite: {
             TOOLBAR_BUTTONS: [
@@ -342,30 +342,50 @@ require([
 
       getExoUserInfo().then(data => {
         $initUser.resolve(data.userInfo, data.authToken);
-        console.log(data);
-
       }).catch(err => {
         if (isGuest) {
           log.debug("Cannot get user info for call invitation: " + callId + " (" + inviteId + "), treating the user as a guest", err);
           // Show signIn page: get firstName and lastName
-          showSignInPage().then(settings => {
-            var guestInfo = {};
-            guestInfo.firstName = settings.firstName;
-            guestInfo.lastName = settings.lastName;
-            // Generate unique id
-            guestInfo.id =
-              "guest-" +
-              settings.firstName +
-              "-" +
-              settings.lastName +
-              "-" +
-              Date.now();
-            getInternalToken().then(response => {
-              var token = response.token;
-              $initUser.resolve(guestInfo, token);
-            }).catch(err => {
-              log.error("Cannot get internal auth token for call: " + callId + " user: " + guestInfo.id, err);
+          app.initSignInPopup().then(() => {
+            showSignInPage().then(settings => {
+              var guestInfo = {};
+              guestInfo.firstName = settings.firstName;
+              guestInfo.lastName = settings.lastName;
+              // Generate unique id
+              const lastName = guestInfo.lastName.includes(" ") ? guestInfo.lastName.split(" ").join("") : guestInfo.lastName;
+              guestInfo.id =
+                "guest-" +
+                settings.firstName +
+                "-" +
+                lastName +
+                "-" +
+                Date.now();
+              getInternalToken().then(response => {
+                var token = response.token;
+                $initUser.resolve(guestInfo, token);
+              }).catch(err => {
+                log.error("Cannot get internal auth token for call: " + callId + " user: " + guestInfo.id, err);
+              });
             });
+          }).catch(guestData => {
+            var guestInfo = {};
+              guestInfo.firstName = guestData.firstName;
+              guestInfo.lastName = guestData.lastName;
+              // Generate unique id
+              const lastName = guestInfo.lastName.includes(" ") ? guestInfo.lastName.split(" ").join("") : guestInfo.lastName;
+              guestInfo.id =
+                "guest-" +
+                guestData.firstName +
+                "-" +
+                lastName +
+                "-" +
+                Date.now();
+              getInternalToken().then(response => {
+                var token = response.token;
+                $initUser.resolve(guestInfo, token);
+              }).catch(err => {
+                log.error("Cannot get internal auth token for call: " + callId + " user: " + guestInfo.id, err);
+              });
           });
         } else {
           log.warn("Cannot get user info for call: " + callId + ", redirecting to portal login page", err);
