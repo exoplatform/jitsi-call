@@ -316,8 +316,8 @@ require([
     var showSignInPage = function() {
       var $promise = $.Deferred();
       var settings = {
-        firstName : "John",
-        lastName : "Doe"
+        firstName : "Anonymous",
+        lastName : "Participant"
       };
       $promise.resolve(settings);
       return $promise;
