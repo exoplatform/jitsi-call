@@ -61,23 +61,30 @@ export function initCallLink(url) {
   });
 }
 
-export function initSignInPopup(app) {
-  console.log(app, this);
+export function initSignInPopup(hideLoader, showLoader) {
   const result = new Promise((resolve, reject) => {
     new Vue({
       el: "#signin-popup",
       components: {
         SignInPopup,
       },
+      created() {
+        hideLoader();
+      },
       vuetify,
       render: function(h) {
+        const thevue = this;
         return h(SignInPopup, {
           on: {
             exouserjoin: function(){
+              showLoader();
               resolve();
+              thevue.$destroy();
             },
             guestjoin: function($event){
+              showLoader();
               reject($event);
+              thevue.$destroy();
             },
           }
         });

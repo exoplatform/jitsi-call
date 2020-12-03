@@ -189,8 +189,11 @@ require([
      * Hides loader
      */
     var hideLoader = function() {
-      $("#loader").css("display", "none");
+     $("#loader").css("display", "none");
     };
+    var showLoader = function() {
+      $("#loader").css("display", "block");
+    }
 
     /*
      * Init invite popup
@@ -347,7 +350,7 @@ require([
         if (isGuest) {
           log.debug("Cannot get user info for call invitation: " + callId + " (" + inviteId + "), treating the user as a guest", err);
           // Show signIn page: get firstName and lastName
-          app.initSignInPopup(app).then(() => {
+          app.initSignInPopup(hideLoader, showLoader).then(() => {
             // window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId;
             showSignInPage(callId);
           })
