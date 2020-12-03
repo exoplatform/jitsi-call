@@ -32,12 +32,12 @@ export default {
   },
   computed: {
     guestData() {
-      const fullName = this.fullName.split(" ");
-      const firstName = fullName[0];
-      fullName.shift();
-      const lastName = fullName.length > 1 ? fullName.join(" ") : fullName;
+      const whiteSpace = this.fullName.indexOf(" ");
+      const firstName = this.fullName.substring(0, whiteSpace);
+      const lastName = this.fullName.substring(whiteSpace);
       return {
-        firstName: firstName, lastName: lastName
+        firstName: firstName,
+        lastName: lastName
       };
     }
   },
