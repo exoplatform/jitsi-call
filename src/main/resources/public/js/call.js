@@ -320,7 +320,7 @@ require([
      * Shows sign in page MOCK
      */
     var showSignInPage = function(callId) {
-      // app.initSignInPopup();
+      // app.initSignInScreen();
       // var $promise = $.Deferred();
       // var settings = {
       //   firstName : "John",
@@ -350,11 +350,10 @@ require([
         if (isGuest) {
           log.debug("Cannot get user info for call invitation: " + callId + " (" + inviteId + "), treating the user as a guest", err);
           // Show signIn page: get firstName and lastName
-          app.initSignInPopup(hideLoader, showLoader).then(() => {
+          app.initSignInScreen(hideLoader, showLoader).then(() => {
             // window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId;
             showSignInPage(callId);
-          })
-          .catch(guestData => {
+          }).catch(guestData => {
             var guestInfo = {};
               guestInfo.firstName = guestData.firstName;
               guestInfo.lastName = guestData.lastName;

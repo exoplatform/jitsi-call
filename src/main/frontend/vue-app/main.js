@@ -2,7 +2,7 @@
 import Vue from "vue";
 import App from "./App.vue";
 import InvitePopup from "./components/InvitePopup.vue";
-import SignInPopup from "./components/SignInPopup.vue";
+import SignInScreen from "./components/SignInScreen.vue";
 import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
 
@@ -61,12 +61,12 @@ export function initCallLink(url) {
   });
 }
 
-export function initSignInPopup(hideLoader, showLoader) {
+export function initSignInScreen(hideLoader, showLoader) {
   const result = new Promise((resolve, reject) => {
     new Vue({
       el: "#signin-popup",
       components: {
-        SignInPopup,
+        SignInScreen,
       },
       created() {
         hideLoader();
@@ -74,7 +74,7 @@ export function initSignInPopup(hideLoader, showLoader) {
       vuetify,
       render: function(h) {
         const thevue = this;
-        return h(SignInPopup, {
+        return h(SignInScreen, {
           on: {
             exouserjoin: function(){
               showLoader();
