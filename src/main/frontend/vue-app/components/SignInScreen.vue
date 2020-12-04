@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <div id="signin-popup" ref="signinpopup">
+      <!-- <img src="/src/main/resources/public/images/logo.png"> -->
       <div v-show="showDialog" class="background"></div>
       <v-dialog
         ref="signin"
