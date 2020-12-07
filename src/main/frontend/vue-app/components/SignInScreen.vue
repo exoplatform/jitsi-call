@@ -17,7 +17,7 @@
           <v-card-actions>
             <v-btn color="#578dc9" large class="ui-action" @click="eXoUserJoining">Sign In</v-btn>
           </v-card-actions>
-          <v-card-text>Or request to join as a Guest</v-card-text>
+          <v-card-text class="text-guest">Or request to join as a Guest</v-card-text>
           <v-card-actions style="flex-flow: column;">
             <v-text-field
               v-model="fullName"
@@ -95,6 +95,9 @@ export default {
           font-size: 24px;
           font-family: Helvetica, arial, sans-serif;
           color: #fff;
+          &.text-guest {
+            font-size: 19px;
+          }
         }
         .v-card__actions {
           .ui-action {
