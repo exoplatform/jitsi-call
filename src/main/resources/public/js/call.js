@@ -267,7 +267,6 @@ require([
               "desktop",
               "fullscreen",
               "fodeviceselection",
-              "recording",
               "hangup",
               "profile",
               "sharedvideo",
@@ -284,6 +283,10 @@ require([
             displayName: name
           }
         };
+        // Enable recording only for users and disable for guests
+        if (!isGuest) {
+          options.interfaceConfigOverwrite.TOOLBAR_BUTTONS.push("recording");
+        }
         api = new JitsiMeetExternalAPI(domain, options);
         webConferencing.updateCall(callId, "joined");
         log.info("Joined to the call " + callId + " by " + userinfo.id);
