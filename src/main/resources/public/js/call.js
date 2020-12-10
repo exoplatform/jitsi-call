@@ -18,7 +18,7 @@ require([
     var api;
 
     var getUrlParameter = function(sParam) {
-      var sPageURL = window.location.search.substring(1),
+      var sPageURL = decodeURIComponent(window.location.search.substring(1)),
         sURLVariables = sPageURL.split("&"),
         sParameterName,
         i;
@@ -27,7 +27,7 @@ require([
         if (sParameterName[0] === sParam) {
           return sParameterName[1] === undefined
             ? true
-            : decodeURIComponent(sParameterName[1]);
+            : sParameterName[1];
         }
       }
     };
@@ -324,16 +324,13 @@ require([
     /**
      * Shows sign in page MOCK
      */
-    var showSignInPage = function(callId) {
-      // app.initSignInScreen();
-      // var $promise = $.Deferred();
-      // var settings = {
-      //   firstName : "John",
-      //   lastName : "Doe"
-      // };
-      // $promise.resolve(settings);
-      // return $promise;
-      return window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId;
+    var showSignInPage = function(callId, inviteId) {
+      let url = "/portal/login?initialURI=/jitsi/meet/" + callId;
+      if (inviteId) {
+        // add invite id if the user connects via invite link
+        url +=  encodeURIComponent("?inviteId=" + inviteId + "&isPortalUser=true");
+      }
+      return window.document.location.href = url;
     };
 
     /**
@@ -343,10 +340,13 @@ require([
       callId = getCallId();
       var $initUser = $.Deferred();
       let inviteId = getUrlParameter("inviteId");
+      let isPortalUser = getUrlParameter("isPortalUser"); // define if it's a portal user
       if (inviteId) {
         let trimmedUrl = window.location.href.substring(0, window.location.href.indexOf("?"));
         window.history.pushState({}, "", trimmedUrl);
-        isGuest = true;
+        if (!isPortalUser) {
+          isGuest = true;
+        }
       }
 
       getExoUserInfo().then(data => {
@@ -356,8 +356,7 @@ require([
           log.debug("Cannot get user info for call invitation: " + callId + " (" + inviteId + "), treating the user as a guest", err);
           // Show signIn page: get firstName and lastName
           app.initSignInScreen(hideLoader, showLoader).then(() => {
-            // window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId;
-            showSignInPage(callId);
+            showSignInPage(callId, inviteId);
           }).catch(guestData => {
             var guestInfo = {};
               guestInfo.firstName = guestData.firstName;
@@ -380,10 +379,32 @@ require([
           });
         } else {
           log.warn("Cannot get user info for call: " + callId + ", redirecting to portal login page", err);
-          // window.document.location.href = "/portal/login?initialURI=/jitsi/meet/" + callId;
-          showSignInPage(callId);
+          showSignInPage(callId, null);
         }
       });
+
+      // Invites the user in call and check if it's allowed to connect
+      function inviteInCall(userinfo, $promise) {
+        if (inviteId) {
+          webConferencing.checkInvite(callId, inviteId, userinfo.id).then(result => {
+            if (result.allowed) {
+              webConferencing.addGuest(callId, userinfo.id).then(() => {
+                $promise.resolve();
+              });
+            } else {
+              $promise.resolve();
+              log.warn("Guest has not been invited to call: " + callId + ", guest: " + userinfo.id +
+                " (" + userinfo.firstName + " " + userinfo.lastName + ")");
+            }
+          }).catch(err => {
+            log.error("Failed to check call invitation: " + callId + " (" + inviteId + ")", err);
+          });
+        } else {
+          $promise.resolve();
+          log.warn("Guest has not been invited to call: " + callId + " that's because inviteId is undefined, guest: "
+            + userinfo.id + " (" + userinfo.firstName + " " + userinfo.lastName + ")");
+        }
+      }
 
       $initUser.then(function(userinfo, token) {
         authToken = token;
@@ -399,21 +420,35 @@ require([
             subscribeUser(userinfo.id);
             var $promise = $.Deferred();
             if (isGuest) {
-              webConferencing.checkInvite(callId, inviteId, userinfo.id).then(result => {
-                if (result.allowed) {
-                  webConferencing.addGuest(callId, userinfo.id).then(() => {
-                    $promise.resolve();
-                  });
+              inviteInCall(userinfo, $promise);
+            } else {
+              // connection as the platform user
+              webConferencing.getCall(callId).then(call => {
+                if (call.owner.members) {
+                  // check if the user is the member of the space or room
+                  for (const member of call.owner.members) {
+                    if (member.id === userinfo.id) {
+                      $promise.resolve();
+                      break;
+                    }
+                  }
                 } else {
-                  $promise.resolve();
-                  log.warn("Guest has been not invited to call: " + callId + ", guest: " + userinfo.id + 
-                    " (" + userinfo.firstName + " " + userinfo.lastName + ")");
+                  // check if the user is the participant in 1-1 call
+                  for (const participant of call.participants) {
+                    if (participant.id === userinfo.id) {
+                      $promise.resolve();
+                      break;
+                    }
+                  }
+                }
+                if ($promise.state() !== "resolved") {
+                  // invite user (it's outside exo user) if it's allowed to connect (if inviteId is correct)
+                  inviteInCall(userinfo, $promise);
                 }
               }).catch(err => {
-                log.error("Failed to check call invitation: " + callId + " (" + inviteId + ")", err);
+                log.error("Cannot init call: " + callId + " user: " + userinfo.id, err);
+                alert("Error occurred while initializing the call."); // TODO i18n
               });
-            } else {
-              $promise.resolve();
             }
             $promise.then(() => {
               webConferencing.getCall(callId).then(call => {
@@ -425,9 +460,11 @@ require([
                   // Check in members
                   // In case when participants are not updated yet.
                   // See startCall() in WebconferencingService, syncMembersAndParticipants
-                  user = Object.values(call.owner.members).filter(member => {
-                    return member.id === userinfo.id;
-                  });
+                  if (call.owner.members) {
+                    user = Object.values(call.owner.members).filter(member => {
+                      return member.id === userinfo.id;
+                    });
+                  }
                   if (user.length == 0) {
                     alert("User is not allowed for this call");
                     return;
@@ -436,7 +473,7 @@ require([
                 initCall(userinfo, call);
               }).catch(err => {
                 log.error("Cannot init call: " + callId + " user: " + userinfo.id, err);
-                alert("Error occured while initializing the call."); // TODO i18n
+                alert("Error occurred while initializing the call."); // TODO i18n
               });
             });
           });
