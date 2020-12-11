@@ -328,7 +328,7 @@ require([
       let url = "/portal/login?initialURI=/jitsi/meet/" + callId;
       if (inviteId) {
         // add invite id if the user connects via invite link
-        url +=  encodeURIComponent("?inviteId=" + inviteId + "&isPortalUser=true");
+        url +=  encodeURIComponent("?inviteId=" + inviteId);
       }
       return window.document.location.href = url;
     };
@@ -340,16 +340,14 @@ require([
       callId = getCallId();
       var $initUser = $.Deferred();
       let inviteId = getUrlParameter("inviteId");
-      let isPortalUser = getUrlParameter("isPortalUser"); // define if it's a portal user
       if (inviteId) {
         let trimmedUrl = window.location.href.substring(0, window.location.href.indexOf("?"));
         window.history.pushState({}, "", trimmedUrl);
-        if (!isPortalUser) {
-          isGuest = true;
-        }
+        isGuest = true;
       }
 
       getExoUserInfo().then(data => {
+        isGuest = false; // we have gotten successfully the current exo user
         $initUser.resolve(data.userInfo, data.authToken);
       }).catch(err => {
         if (isGuest) {
