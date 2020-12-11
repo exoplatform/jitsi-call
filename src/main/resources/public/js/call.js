@@ -385,25 +385,19 @@ require([
 
       // Invites the user in call and check if it's allowed to connect
       function inviteInCall(userinfo, $promise) {
-        if (inviteId) {
-          webConferencing.checkInvite(callId, inviteId, userinfo.id).then(result => {
-            if (result.allowed) {
-              webConferencing.addGuest(callId, userinfo.id).then(() => {
-                $promise.resolve();
-              });
-            } else {
+        webConferencing.checkInvite(callId, inviteId, userinfo.id).then(result => {
+          if (result.allowed) {
+            webConferencing.addGuest(callId, userinfo.id).then(() => {
               $promise.resolve();
-              log.warn("Guest has not been invited to call: " + callId + ", guest: " + userinfo.id +
-                " (" + userinfo.firstName + " " + userinfo.lastName + ")");
-            }
-          }).catch(err => {
-            log.error("Failed to check call invitation: " + callId + " (" + inviteId + ")", err);
-          });
-        } else {
-          $promise.resolve();
-          log.warn("Guest has not been invited to call: " + callId + " that's because inviteId is undefined, guest: "
-            + userinfo.id + " (" + userinfo.firstName + " " + userinfo.lastName + ")");
-        }
+            });
+          } else {
+            $promise.resolve();
+            log.warn("Guest has not been invited to call: " + callId + ", guest: " + userinfo.id +
+              " (" + userinfo.firstName + " " + userinfo.lastName + ")");
+          }
+        }).catch(err => {
+          log.error("Failed to check call invitation: " + callId + " (" + inviteId + ")", err);
+        });
       }
 
       $initUser.then(function(userinfo, token) {
@@ -422,33 +416,13 @@ require([
             if (isGuest) {
               inviteInCall(userinfo, $promise);
             } else {
-              // connection as the platform user
-              webConferencing.getCall(callId).then(call => {
-                if (call.owner.members) {
-                  // check if the user is the member of the space or room
-                  for (const member of call.owner.members) {
-                    if (member.id === userinfo.id) {
-                      $promise.resolve();
-                      break;
-                    }
-                  }
-                } else {
-                  // check if the user is the participant in 1-1 call
-                  for (const participant of call.participants) {
-                    if (participant.id === userinfo.id) {
-                      $promise.resolve();
-                      break;
-                    }
-                  }
-                }
-                if ($promise.state() !== "resolved") {
-                  // invite user (it's outside exo user) if it's allowed to connect (if inviteId is correct)
-                  inviteInCall(userinfo, $promise);
-                }
-              }).catch(err => {
-                log.error("Cannot init call: " + callId + " user: " + userinfo.id, err);
-                alert("Error occurred while initializing the call."); // TODO i18n
-              });
+              if (inviteId) {
+                // exo user with invite link
+                // invite user (it's outside exo user for the call) if it's allowed to connect (if inviteId is correct)
+                inviteInCall(userinfo, $promise);
+              } else {
+                $promise.resolve();
+              }
             }
             $promise.then(() => {
               webConferencing.getCall(callId).then(call => {
