@@ -357,13 +357,13 @@ require([
             showSignInPage(callId, inviteId);
           }).catch(guestData => {
             var guestInfo = {};
-              guestInfo.firstName = guestData.firstName;
-              guestInfo.lastName = guestData.lastName;
+              guestInfo.firstName = transliterate(guestData.firstName);
+              guestInfo.lastName = transliterate(guestData.lastName);
               // Generate unique id
               const lastName = guestInfo.lastName.includes(" ") ? guestInfo.lastName.split(" ").join("") : guestInfo.lastName;
               guestInfo.id =
                 "guest-" +
-                guestData.firstName +
+                transliterate(guestData.firstName) +
                 "-" +
                 lastName +
                 "-" +

@@ -57,6 +57,7 @@
   },
   "dependencies": {
     "anchorme": "^1.1.2",
-    "autosize": "^4.0.2"
+    "autosize": "^4.0.2",
+    "transliteration": "^2.2.0"
   }
 }
