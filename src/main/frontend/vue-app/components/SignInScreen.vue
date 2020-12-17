@@ -1,9 +1,7 @@
 <template>
   <v-app>
-    <!-- <img src="../../../resources/public/images/logo.png" />
-    <img src="/src/main/resources/public/images/logo.png" />-->
+    <img :src="'../images/logo.png'">
     <div id="signin-popup" ref="signinpopup">
-      <!-- <img src="/src/main/resources/public/images/logo.png"> -->
       <div v-show="showDialog" class="background"></div>
       <v-dialog
         ref="signin"
@@ -12,8 +10,7 @@
         content-class="sign-in-dialog"
         width="500px"
         persistent
-        no-click-animation
-      >
+        no-click-animation>
         <v-card dark>
           <v-card-text>Sign In to join the call as eXo user</v-card-text>
           <v-card-actions>
@@ -22,8 +19,7 @@
               color="#578dc9"
               large
               class="ui-action"
-              @click="eXoUserJoining"
-            >Sign In</v-btn>
+              @click="eXoUserJoining">Sign In</v-btn>
           </v-card-actions>
           <v-card-text class="text-guest">Or request to join as a Guest</v-card-text>
           <v-card-actions style="flex-flow: column;">
@@ -40,8 +36,7 @@
                 color="#999"
                 dense
                 solo
-                required
-              ></v-text-field>
+                required></v-text-field>
               <i class="uiIconUser"></i>
             </div>
             <v-btn class="ui-action" large outlined @click="guestJoining">Join as Guest</v-btn>
@@ -84,6 +79,16 @@ export default {
 };
 </script>
  <style lang="less" scoped>
+ img {
+   position: absolute;
+   top: 30px;
+   left: 50px;
+   z-index: 2000; 
+   object-fit: contain;
+   height: 70px;
+   width: 140px;
+   opacity: 0.7;
+ }
 .v-dialog__container {
   display: block;
 }
@@ -95,9 +100,6 @@ export default {
     &.sign-in-dialog {
       overflow-y: hidden;
       height: 400px;
-      // box-shadow: 0 0px 40px -5px rgba(255, 255, 255, 0.12),
-      //   0 0px 20px -5px rgba(255, 255, 255, 0.12),
-      //   0 0px 40px -5px rgba(255, 255, 255, 0.12);
       box-shadow: none;
       .theme--dark.v-card {
         background-color: #385268;
@@ -136,9 +138,6 @@ export default {
               .theme--light {
                 &.v-icon {
                   color: "#999";
-                  // &.v-label {
-                  //   color: rgb(178 188 202);
-                  // }
                 }
               }
               .v-text-field__slot {
@@ -179,8 +178,6 @@ export default {
     }
   }
 }
-// #app,
-// #loader {
   input[readonly],
   input[type="text"] {
     background-color: transparent !important;
