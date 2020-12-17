@@ -1,13 +1,15 @@
 <template>
   <v-app>
+    <!-- <img src="../../../resources/public/images/logo.png" />
+    <img src="/src/main/resources/public/images/logo.png" />-->
     <div id="signin-popup" ref="signinpopup">
       <!-- <img src="/src/main/resources/public/images/logo.png"> -->
       <div v-show="showDialog" class="background"></div>
       <v-dialog
         ref="signin"
         v-model="showDialog"
+        :hide-overlay="true"
         content-class="sign-in-dialog"
-        hide-overlay
         width="500px"
         persistent
         no-click-animation
@@ -15,23 +17,34 @@
         <v-card dark>
           <v-card-text>Sign In to join the call as eXo user</v-card-text>
           <v-card-actions>
-            <v-btn color="#578dc9" large class="ui-action" @click="eXoUserJoining">Sign In</v-btn>
+            <v-btn
+              :elevation="0"
+              color="#578dc9"
+              large
+              class="ui-action"
+              @click="eXoUserJoining"
+            >Sign In</v-btn>
           </v-card-actions>
           <v-card-text class="text-guest">Or request to join as a Guest</v-card-text>
           <v-card-actions style="flex-flow: column;">
-            <v-text-field
-              v-model="fullName"
-              light
-              prepend-inner-icon="$account"
-              type="text"
-              class="ui-action"
-              label="Full name"
-              hide-details
-              dense
-              solo
-              required
-            ></v-text-field>
-            <v-btn class="ui-action" large outlined @click="guestJoining">Join as a Guest</v-btn>
+            <div style="position: relative; width: 100%;">
+              <v-text-field
+                ref="textfield"
+                v-model="fullName"
+                light
+                prepend-inner-icon="$account"
+                type="text"
+                class="ui-action"
+                label="Full name"
+                hide-details
+                color="#999"
+                dense
+                solo
+                required
+              ></v-text-field>
+              <i class="uiIconUser"></i>
+            </div>
+            <v-btn class="ui-action" large outlined @click="guestJoining">Join as Guest</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -104,18 +117,40 @@ export default {
             width: 100%;
             &.v-text-field {
               margin-bottom: 15px;
+              &.v-text-field--solo {
+                .v-label {
+                  &:focus,:active {
+                    outline: none;
+                  }
+                }
+                }
               .v-icon {
                 &.mdi {
-                  border-right: 1px solid;
-                  padding: 0 7px;
+                  border-right: 1px solid rgb(178 188 202);
+                  padding: 0 10px;
+                  &.mdi-account::before {
+                    opacity: 0;
+                  }
+                }
+              }
+              .theme--light {
+                &.v-icon {
+                  color: "#999";
+                  // &.v-label {
+                  //   color: rgb(178 188 202);
+                  // }
                 }
               }
               .v-text-field__slot {
                 .v-label {
                   padding-left: 15px;
+                  color: rgb(178 188 202);
                 }
                 input {
                   padding-left: 15px;
+                  &::placeholder {
+                    color: "#999";
+                  }
                 }
               }
             }
@@ -132,9 +167,40 @@ export default {
               }
             }
           }
+          .uiIconUser {
+            color: rgb(178 188 202);
+            position: absolute;
+            top: 15%;
+            left: 4%;
+            font-size: 20px;
+          }
         }
       }
     }
   }
 }
+// #app,
+// #loader {
+  input[readonly],
+  input[type="text"] {
+    background-color: transparent !important;
+    border: none;
+    margin-bottom: 0;
+    height: unset;
+    cursor: default;
+    &:focus {
+      background: transparent;
+      box-shadow: none;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      border: none;
+      outline: none;
+    }
+  }
+  input:focus:invalid:focus {
+     box-shadow: none;
+     border-color: transparent;
+     -webkit-box-shadow: none;
+     -moz-box-shadow: none;
+  }
 </style>

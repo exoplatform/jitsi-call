@@ -57,20 +57,20 @@ export default {
       return this.isClicked ? "display: block" : "display: none";
     },
     linkStyle() {
-      return this.isClicked ?  "display: none" : "display: block";
+      return this.isClicked ? "display: none" : "display: block";
     }
-  //   color() {
-  //     return this.isClicked ? "#46a546" : "#0376da";
-  //   },
-  //   title() {
-  //     return this.isClicked ? "Link copied to clipboard" : this.url;
-  //   }
+    //   color() {
+    //     return this.isClicked ? "#46a546" : "#0376da";
+    //   },
+    //   title() {
+    //     return this.isClicked ? "Link copied to clipboard" : this.url;
+    //   }
   },
   methods: {
     copyUrl() {
       this.isClicked = !this.isClicked;
       // eslint-disable-next-line no-magic-numbers
-      setTimeout(() => this.isClicked = !this.isClicked, 5000);
+      setTimeout(() => (this.isClicked = !this.isClicked), 5000);
       this.$refs.copyinput.select();
       document.execCommand("copy");
     }
@@ -87,7 +87,7 @@ export default {
   }
 }
 .btn-copy {
-  cursor: pointer; 
+  cursor: pointer;
 }
 #invite-popup {
   position: absolute;
@@ -106,11 +106,29 @@ export default {
 }
 </style>
 <style scoped>
-.btn-copy.v-text-field >>> input{
-      text-overflow: ellipsis;
-      display: inline-block !important;
-      white-space: nowrap;
-      overflow: hidden;
-      margin-right: 25px;
+.btn-copy.v-text-field >>> input {
+  text-overflow: ellipsis;
+  display: inline-block !important;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-right: 25px;
+}
+</style>
+<style lang="less">
+#invite-popup {
+  input[readonly],
+  input[type="text"] {
+    background-color: transparent !important;
+    border: none;
+    margin-bottom: 0;
+    height: unset;
+    cursor: copy;
+    &:focus {
+      background: transparent;
+      box-shadow: none;
+      border: none;
+      outline: none;
     }
+  }
+}
 </style>
