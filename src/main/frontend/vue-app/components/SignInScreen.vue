@@ -1,6 +1,7 @@
 <template>
   <v-app>
-    <img :src="'../images/logo.png'">
+    <!-- <img :src="'../images/logo.png'"> -->
+    <img src="/jitsi/images/logo.png ">
     <div id="signin-popup" ref="signinpopup">
       <div v-show="showDialog" class="background"></div>
       <v-dialog
