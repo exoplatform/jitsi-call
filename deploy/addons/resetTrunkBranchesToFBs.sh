@@ -8,8 +8,9 @@ MVN=`which mvn`
 # Paths to repos
 #repos[0]=/h/Work/eXo/Meeds/social                            # social
 #repos[1]=/h/Work/eXo/eXo_sources/exo-addons/chat-application # chat
-repos[2]=/h/Work/eXo/eXo_sources/exo-addons/web-conferencing # webconf
-repos[3]=/h/Work/eXo/Real/Jitsi/jitsi-addon/jitsi            # jitsi
+#repos[2]=/h/Work/eXo/Real/cloud-drive-in-ecms/final/ecms	  # ecms
+repos[3]=/h/Work/eXo/eXo_sources/exo-addons/web-conferencing # webconf
+repos[4]=/h/Work/eXo/Real/Jitsi/jitsi-addon/jitsi            # jitsi
 
 # Branches (should exist)
 trunkBranch="trunk/jitsi"

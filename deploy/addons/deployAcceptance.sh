@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script allows to deploy the acceptance
+
 GIT=`which git`
 MVN=`which mvn`
 
