@@ -3,6 +3,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import InvitePopup from "./components/InvitePopup.vue";
 import SignInScreen from "./components/SignInScreen.vue";
+import ExitScreen from "./components/ExitScreen.vue";
 import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
 
@@ -88,6 +89,22 @@ export function initSignInScreen(hideLoader, showLoader) {
             },
           }
         });
+      },
+    });
+  });
+  return result;
+}
+
+export function initExitScreen() {
+  const result = new Promise((resolve, reject) => {
+    new Vue({
+      el: "#exit-screen",
+      components: {
+        ExitScreen,
+      },
+      vuetify,
+      render: function(h) {
+        return h(ExitScreen);
       },
     });
   });
