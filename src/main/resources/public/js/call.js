@@ -233,6 +233,7 @@ require([
         apiUrl.lastIndexOf("/external_api.js")
       );
       var name = userinfo.firstName + " " + userinfo.lastName;
+      // const avatarLink = userinfo.avatarLink;
       if (isGuest) {
         name += " (guest)";
       }
@@ -278,9 +279,14 @@ require([
             ],
             JITSI_WATERMARK_LINK: "",
             SETTINGS_SECTIONS: settings
+            // RANDOM_AVATAR_URL_PREFIX: true,
+            // RANDOM_AVATAR_URL_SUFFIX: true,
+            // urlPrefix = "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340",
+            // urlSuffix = '.jpg'
           },
           userInfo: {
             displayName: name
+            // avatarUrl: avatarLink
           }
         };
         // Enable recording only for users and disable for guests
@@ -294,15 +300,20 @@ require([
           isStopped = true;
           webConferencing.updateCall(callId, "leaved").then(() => {
             api.dispose();
+            if (isGuest) {
+              app.initExitScreen(); 
+            }
             window.close();
           });
         });
+        // api.executeCommand("avatarUrl", avatarLink);
         api.addEventListener("participantRoleChanged", event => {
           const inviteLink = provider.getInviteLink(call);
           if (!isGuest) {
             app.initCallLink(inviteLink);
           }
           api.executeCommand("displayName", name);
+          // api.executeCommand("avatarUrl", avatarLink);
           // For recording feature
           if (event.role === "moderator") {
            isModerator = true;
