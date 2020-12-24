@@ -300,10 +300,13 @@ require([
           isStopped = true;
           webConferencing.updateCall(callId, "leaved").then(() => {
             api.dispose();
-            if (isGuest) {
-              app.initExitScreen(); 
-            }
             window.close();
+            setTimeout(() => {
+              if (!window.closed) {
+                // If not already closed we show the exit message to the user
+                app.initExitScreen();
+              }
+            }, 250);
           });
         });
         // api.executeCommand("avatarUrl", avatarLink);
