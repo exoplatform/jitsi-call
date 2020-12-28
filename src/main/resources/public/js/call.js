@@ -101,6 +101,7 @@ require([
         webConferencing.updateCall(callId, "leaved");
       }
       if (api) {
+        closeInviteLink();
         api.dispose();
       }
     };
@@ -195,6 +196,16 @@ require([
       $("#loader").css("display", "block");
     }
 
+    function closeInviteLink() {
+      const container = document.getElementById("invite-popup");
+      if (container) {
+        const children = container.children;
+        if (children.length) {
+          console.log(children);
+          Object.values(children).map(child => container.removeChild(child));
+        }
+      }
+    }
     /*
      * Init invite popup
      */
@@ -202,6 +213,7 @@ require([
       var url = window.location.href + "?inviteId=" + inviteId;
       $("#invite-link").val(url);
     };*/
+    
 
     var subscribeUser = function(userId) {
       // Subscribe to user updates (incoming calls will be notified here)
@@ -211,6 +223,7 @@ require([
           if (update.eventType == "call_state" && update.callId == callId) {
             if (update.callState == "stopped" && !isStopping) {
               isStopped = true;
+              closeInviteLink();
               api.dispose();
               window.close();
             }
@@ -299,7 +312,9 @@ require([
         api.on("readyToClose", event => {
           isStopped = true;
           webConferencing.updateCall(callId, "leaved").then(() => {
+            closeInviteLink();
             api.dispose();
+            app.initExitScreen(); 
             window.close();
             setTimeout(() => {
               if (!window.closed) {
@@ -312,9 +327,9 @@ require([
         // api.executeCommand("avatarUrl", avatarLink);
         api.addEventListener("participantRoleChanged", event => {
           const inviteLink = provider.getInviteLink(call);
-          if (!isGuest) {
+          //if (!isGuest) {
             app.initCallLink(inviteLink);
-          }
+          //}
           api.executeCommand("displayName", name);
           // api.executeCommand("avatarUrl", avatarLink);
           // For recording feature
