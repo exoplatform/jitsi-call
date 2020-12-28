@@ -16,6 +16,12 @@ export default {
 </script>
 
 <style lang="less">
+  html {
+    overflow-y: hidden;
+    body {
+      height: 100vh;
+    }
+  }
   #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -35,6 +41,9 @@ export default {
         border: none;
         outline: none;
       }
+    }
+    #meet {
+      height: 100%;
     }
   }
 </style>
