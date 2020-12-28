@@ -36,6 +36,7 @@
                 color="#999"
                 dense
                 solo
+                flat
                 required></v-text-field>
               <i class="uiIconUser"></i>
             </div>
@@ -78,22 +79,30 @@ export default {
   }
 };
 </script>
- <style lang="less" scoped>
- img {
-   position: absolute;
-   top: 30px;
-   left: 50px;
-   z-index: 2000; 
-   object-fit: contain;
-   height: 70px;
-   width: 140px;
-   opacity: 0.7;
- }
-.v-dialog__container {
-  display: block;
-}
+<style lang="less" scoped>
+  img {
+    position: absolute;
+    top: 30px;
+    left: 50px;
+    z-index: 2000; 
+    object-fit: contain;
+    height: 70px;
+    width: 140px;
+    opacity: 0.7;
+  }
+  .v-dialog__container {
+    display: block;
+  }
 </style>
 <style lang="less">
+html {
+  overflow-y: hidden;
+}
+.v-application {
+  .elevation-0 {
+    box-shadow: none !important;
+  }
+}
 .v-dialog__content {
   background: radial-gradient(50% 50% at 50% 50%, #2a3a4b 20.83%, #1e2a36 100%);
   .v-dialog {
@@ -137,18 +146,18 @@ export default {
               }
               .theme--light {
                 &.v-icon {
-                  color: "#999";
+                  color: #999;
                 }
               }
               .v-text-field__slot {
                 .v-label {
                   padding-left: 15px;
-                  color: rgb(178 188 202);
+                  color: #999;
                 }
                 input {
                   padding-left: 15px;
                   &::placeholder {
-                    color: "#999";
+                    color: #999;
                   }
                 }
               }
@@ -167,7 +176,7 @@ export default {
             }
           }
           .uiIconUser {
-            color: rgb(178 188 202);
+            color: #999;
             position: absolute;
             top: 15%;
             left: 4%;
