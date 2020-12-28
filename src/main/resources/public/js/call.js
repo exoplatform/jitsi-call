@@ -197,23 +197,30 @@ require([
     }
 
     function closeInviteLink() {
-      const container = document.getElementById("invite-popup");
-      if (container) {
-        const children = container.children;
-        if (children.length) {
-          Object.values(children).map(child => container.removeChild(child));
+      if (!isGuest) {
+        const container = document.getElementById("invite-popup");
+        if (container) {
+          const children = container.children;
+          if (children.length) {
+            Object.values(children).map(child => container.removeChild(child));
+          }
         }
       }
     }
-    /*
-     * Init invite popup
-     */
-    /* var initInvitePopup = function(inviteId) {
-      var url = window.location.href + "?inviteId=" + inviteId;
-      $("#invite-link").val(url);
-    };*/
     
-
+    var closeWindow = function() {
+      closeInviteLink();
+      api.dispose();
+      // Set timer first, then actually try to close the window (it may fail)
+      setTimeout(() => {
+        if (!window.closed) {
+          // If not already closed we show the exit message to the user
+          app.initExitScreen();
+        }
+      }, 250);
+      window.close();
+    };
+    
     var subscribeUser = function(userId) {
       // Subscribe to user updates (incoming calls will be notified here)
       webConferencing.onUserUpdate(userId, update => {
@@ -222,9 +229,7 @@ require([
           if (update.eventType == "call_state" && update.callId == callId) {
             if (update.callState == "stopped" && !isStopping) {
               isStopped = true;
-              closeInviteLink();
-              api.dispose();
-              window.close();
+              closeWindow();
             }
           }
         } // it's other provider type - skip it
@@ -238,7 +243,6 @@ require([
      */
     var initCall = function(userinfo, call) {
       initLoaderScreen(userinfo.id, call);
-      // initInvitePopup(call.inviteId);
       var apiUrl = document.getElementById("jitsi-api").getAttribute("src");
       const domain = apiUrl.substring(
         apiUrl.indexOf("://") + 3,
@@ -309,23 +313,14 @@ require([
         api.on("readyToClose", event => {
           isStopped = true;
           webConferencing.updateCall(callId, "leaved").then(() => {
-            closeInviteLink();
-            api.dispose();
-            app.initExitScreen(); 
-            window.close();
-            setTimeout(() => {
-              if (!window.closed) {
-                // If not already closed we show the exit message to the user
-                app.initExitScreen();
-              }
-            }, 250);
+            closeWindow();
           });
         });
         api.addEventListener("participantRoleChanged", event => {
           const inviteLink = provider.getInviteLink(call);
-          //if (!isGuest) {
+          if (!isGuest) {
             app.initCallLink(inviteLink);
-          //}
+          }
           api.executeCommand("displayName", name);
           // For recording feature
           if (event.role === "moderator") {
