@@ -201,7 +201,6 @@ require([
       if (container) {
         const children = container.children;
         if (children.length) {
-          console.log(children);
           Object.values(children).map(child => container.removeChild(child));
         }
       }
@@ -246,7 +245,7 @@ require([
         apiUrl.lastIndexOf("/external_api.js")
       );
       var name = userinfo.firstName + " " + userinfo.lastName;
-      // const avatarLink = userinfo.avatarLink;
+      const avatarLink = window.location.origin + userinfo.avatarLink;
       if (isGuest) {
         name += " (guest)";
       }
@@ -264,7 +263,7 @@ require([
           width: "100%",
           jwt: token,
           // height: window.innerHeight,
-          height: 100%,
+          height: "100%",
           parentNode: document.querySelector("#meet"),
           onload: hideLoader,
           configOverwrite: {
@@ -293,14 +292,10 @@ require([
             ],
             JITSI_WATERMARK_LINK: "",
             SETTINGS_SECTIONS: settings
-            // RANDOM_AVATAR_URL_PREFIX: true,
-            // RANDOM_AVATAR_URL_SUFFIX: true,
-            // urlPrefix = "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340",
-            // urlSuffix = '.jpg'
           },
           userInfo: {
-            displayName: name
-            // avatarUrl: avatarLink
+            displayName: name,
+            avatarUrl: avatarLink
           }
         };
         // Enable recording only for users and disable for guests
@@ -308,6 +303,7 @@ require([
           options.interfaceConfigOverwrite.TOOLBAR_BUTTONS.push("recording");
         }
         api = new JitsiMeetExternalAPI(domain, options);
+        api.executeCommand("avatarUrl", avatarLink);
         webConferencing.updateCall(callId, "joined");
         log.info("Joined to the call " + callId + " by " + userinfo.id);
         api.on("readyToClose", event => {
@@ -325,14 +321,12 @@ require([
             }, 250);
           });
         });
-        // api.executeCommand("avatarUrl", avatarLink);
         api.addEventListener("participantRoleChanged", event => {
           const inviteLink = provider.getInviteLink(call);
           //if (!isGuest) {
             app.initCallLink(inviteLink);
           //}
           api.executeCommand("displayName", name);
-          // api.executeCommand("avatarUrl", avatarLink);
           // For recording feature
           if (event.role === "moderator") {
            isModerator = true;
