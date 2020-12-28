@@ -263,7 +263,8 @@ require([
           roomName: callId,
           width: "100%",
           jwt: token,
-          height: window.innerHeight,
+          // height: window.innerHeight,
+          height: 100%,
           parentNode: document.querySelector("#meet"),
           onload: hideLoader,
           configOverwrite: {
