@@ -32,7 +32,7 @@
       ref="copyinput"
       :value="url"
       type="text"
-      style="opacity: 0; width: 160px"
+      style="opacity: 0; width: 160px; position: absolute; top: 0;"
       class="btn-copy"
     />
   </div>
