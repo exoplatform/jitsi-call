@@ -123,7 +123,13 @@ require([
      */
     var getRoomTitle = function(call) {
       if (call.owner.group) {
-        return call.owner.title;
+        let groupTitle;
+        if (call.title) {
+          groupTitle = call.title;
+        } else {
+          groupTitle = call.owner.title;
+        }
+        return groupTitle;
       }
       // 1-1 call
       var subject = "";
@@ -141,7 +147,13 @@ require([
      */
     var getTabTitle = function(call, userId) {
       if (call.owner.group) {
-        return "Call: " + call.owner.title;
+        let groupTitle;
+        if (call.title) {
+          groupTitle = call.title;
+        } else {
+          groupTitle = call.owner.title;
+        }
+        return "Call: " + groupTitle;
       }
       // 1-1 call
       var title = "Call: ";
@@ -172,7 +184,13 @@ require([
       if (call.owner.group) {
         var link = call.owner.avatarLink;
         $loader.find(".logo").css("background-image", "url(" + link + ")");
-        $loader.find(".room").html(call.owner.title);
+        let groupTitle;
+        if (call.title) {
+          groupTitle = call.title;
+        } else {
+          groupTitle = call.owner.title;
+        }
+        $loader.find(".room").html(groupTitle);
       } else {
         for (var i = 0; i < call.participants.length; i++) {
           // not current user
