@@ -273,9 +273,6 @@ require([
           configOverwrite: {
             subject: roomTitle,
             prejoinPageEnabled: true,
-            //requireDisplayName: true,
-            //enableWelcomePage: true,
-            //enableClosePage: true,
           },
           interfaceConfigOverwrite: {
             TOOLBAR_BUTTONS: [
@@ -320,6 +317,11 @@ require([
           const inviteLink = provider.getInviteLink(call);
           if (!isGuest) {
             app.initCallLink(inviteLink);
+            window.addEventListener("iframe_message", (e) => {
+              // e.detail.isVisible = true;
+              // setTimeout(() => (e.detail.isVisible = false), 5000);              
+              const url = e.detail.url;
+            }, false);
           }
           api.executeCommand("displayName", name);
           // For recording feature

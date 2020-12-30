@@ -7,6 +7,10 @@ import ExitScreen from "./components/ExitScreen.vue";
 import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
 
+export const EventBus = new Vue();
+export const storage = {
+  isVisible: false
+};
 //Vue.config.productionTip = false
 Vue.use(Vuetify);
 const vuetify = new Vuetify({

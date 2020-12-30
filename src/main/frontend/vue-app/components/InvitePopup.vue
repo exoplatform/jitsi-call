@@ -13,8 +13,7 @@
       type="text"
       readonly
       @click="copyUrl"
-      @click:append="copyUrl"
-    ></v-text-field>
+      @click:append="copyUrl"></v-text-field>
     <v-text-field
       :value="textLink"
       :style="style"
@@ -26,30 +25,30 @@
       hide-details
       dark
       type="text"
-      readonly
-    ></v-text-field>
+      readonly></v-text-field>
     <input
       ref="copyinput"
       :value="url"
       type="text"
       style="opacity: 0; width: 160px; position: absolute; top: 0;"
-      class="btn-copy"
-    />
+      class="btn-copy"/>
   </div>
 </template>
+
 <script>
 export default {
   props: {
     // eslint-disable-next-line vue/require-default-prop
     url: {
       type: String,
-      reguired: true
+      reguired: true,
     }
   },
   data() {
     return {
       textLink: "Link copied to clipboard",
-      isClicked: false
+      isClicked: false,
+      isVisible: false
     };
   },
   computed: {
@@ -59,12 +58,6 @@ export default {
     linkStyle() {
       return this.isClicked ? "display: none" : "display: block";
     }
-    //   color() {
-    //     return this.isClicked ? "#46a546" : "#0376da";
-    //   },
-    //   title() {
-    //     return this.isClicked ? "Link copied to clipboard" : this.url;
-    //   }
   },
   methods: {
     copyUrl() {
@@ -73,6 +66,11 @@ export default {
       setTimeout(() => (this.isClicked = !this.isClicked), 5000);
       this.$refs.copyinput.select();
       document.execCommand("copy");
+    },
+    showInvitePopup(e) {
+      this.isVisible = true;
+      // eslint-disable-next-line no-magic-numbers
+      setTimeout(() => (this.isVisible = false), 5000);
     }
   }
 };
