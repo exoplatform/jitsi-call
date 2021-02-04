@@ -12,10 +12,10 @@
   <artifactId>jitsi-call</artifactId>
   <name>eXo Jitsi :: Call App :: Jitsi</name>
   <description>Jitsi Microservice</description>
-  <version>1.2.x-SNAPSHOT</version>
+  <version>1.2.x-maintenance-SNAPSHOT</version>
 
   <properties>
-    <org.exoplatform.depmgt.version>20.x-SNAPSHOT</org.exoplatform.depmgt.version>
+    <org.exoplatform.depmgt.version>20.x-maintenance-SNAPSHOT</org.exoplatform.depmgt.version>
     <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
 
     <!-- Sonar properties -->
