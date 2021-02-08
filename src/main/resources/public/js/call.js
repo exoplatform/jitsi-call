@@ -400,9 +400,9 @@ require([
               const lastName = guestInfo.lastName.includes(" ") ? guestInfo.lastName.split(" ").join("") : guestInfo.lastName;
               guestInfo.id =
                 "guest-" +
-                transliterate(guestData.firstName) +
+                transliterate(guestData.firstName).replace(/[^\w\s]/gi, '') +
                 "-" +
-                lastName +
+                lastName.replace(/[^\w\s]/gi, '') +
                 "-" +
                 Date.now();
               getInternalToken().then(response => {
