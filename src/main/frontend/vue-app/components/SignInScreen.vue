@@ -30,7 +30,7 @@
                 light
                 prepend-inner-icon="$account"
                 type="text"
-                class="ui-action"
+                class="ui-action guestName"
                 label="Full name"
                 hide-details
                 color="#999"
@@ -38,7 +38,7 @@
                 solo
                 flat
                 required></v-text-field>
-              <i class="uiIconUser"></i>
+              <i class="iconUser"></i>
             </div>
             <v-btn class="ui-action" large outlined @click="guestJoining">Join as Guest</v-btn>
           </v-card-actions>
@@ -175,12 +175,17 @@ html {
               }
             }
           }
-          .uiIconUser {
-            color: #999;
+          .guestName input {
+            box-shadow: none;
+            font-size: 15px;
+          }
+          .iconUser {
             position: absolute;
-            top: 15%;
-            left: 4%;
-            font-size: 20px;
+            top: 4%;
+            left: 1%;
+            height: 30px;
+            width: 30px;
+            background: #ffffff url(/eXoSkin/skin/images/themes/default/username.png) no-repeat left -3px;
           }
         }
       }
