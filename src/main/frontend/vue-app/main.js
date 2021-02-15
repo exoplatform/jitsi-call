@@ -32,7 +32,7 @@ export function init() {
   // getting locale ressources
   // return exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
   return new Vue({
-    el: "#app",
+    el: "#app-container",
     components: {
       App,
     },
@@ -47,7 +47,7 @@ export function initCallLink(url) {
   // getting locale ressources
   // return exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
   return new Vue({
-    el: "#invite-popup",
+    el: "#invite-popup-container",
     components: {
       InvitePopup,
     },
@@ -65,7 +65,7 @@ export function initCallLink(url) {
 export function initSignInScreen(hideLoader, showLoader) {
   const result = new Promise((resolve, reject) => {
     new Vue({
-      el: "#signin-popup",
+      el: "#signin-popup-container",
       components: {
         SignInScreen,
       },
@@ -98,7 +98,7 @@ export function initSignInScreen(hideLoader, showLoader) {
 export function initExitScreen() {
   const result = new Promise((resolve, reject) => {
     new Vue({
-      el: "#exit-screen",
+      el: "#exit-screen-container",
       components: {
         ExitScreen,
       },

@@ -1,7 +1,7 @@
 <template>
   <div id="invite-popup">
     <v-text-field
-      :value="url"
+      :value="inviteLink"
       :style="linkStyle"
       background-color="#0376da"
       class="btn-copy"
@@ -30,7 +30,7 @@
     ></v-text-field>
     <input
       ref="copyinput"
-      :value="url"
+      :value="inviteLink"
       type="text"
       style="opacity: 0; width: 160px; position: absolute; top: 0;"
       class="btn-copy"
@@ -48,6 +48,7 @@ export default {
   },
   data() {
     return {
+      inviteLink: this.url,
       textLink: "Link copied to clipboard",
       isClicked: false
     };

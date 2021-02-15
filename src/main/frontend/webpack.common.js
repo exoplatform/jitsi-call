@@ -61,6 +61,12 @@ let config = {
       },
     ],
   },
+  /*
+  externals: {
+    vue: "Vue",
+    vuetify: "Vuetify",
+  },
+  * */
   plugins: [
     // we use ExtractTextWebpackPlugin to extract the css code on a css file
     new ExtractTextWebpackPlugin("css/main.css"),
