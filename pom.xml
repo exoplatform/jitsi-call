@@ -17,6 +17,9 @@
   <properties>
     <org.exoplatform.depmgt.version>20.x-SNAPSHOT</org.exoplatform.depmgt.version>
     <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
+  
+    <!-- Sonar properties -->
+    <sonar.organization>exoplatform</sonar.organization>
   </properties>
 
   <dependencyManagement>
@@ -114,4 +117,34 @@
       </plugin>
     </plugins>
   </build>
+  
+  <!-- This profile is used to allow github action to build branches. The github action is used for sonar analysis -->
+  <profiles>
+    <profile>
+      <id>project-repositories</id>
+      <activation>
+        <property>
+          <name>!skip-project-repositories</name>
+        </property>
+      </activation>
+      <repositories>
+        <repository>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <id>repository.exoplatform.org</id>
+          <url>https://repository.exoplatform.org/public</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <id>repository.exoplatform.org</id>
+          <url>https://repository.exoplatform.org/public</url>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
 </project>
