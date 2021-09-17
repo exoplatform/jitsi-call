@@ -15,7 +15,7 @@
   <version>1.1.x-SNAPSHOT</version>
 
   <properties>
-    <org.exoplatform.depmgt.version>19.x-SNAPSHOT</org.exoplatform.depmgt.version>
+    <org.exoplatform.depmgt.version>19.0</org.exoplatform.depmgt.version>
     <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
   </properties>
 
