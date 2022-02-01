@@ -42,7 +42,6 @@ body {
 
 #loader .content .label {
   font-size: 36px;
-  transform: translate(-74px, -20px);
 }
 
 #loader .content .room {
@@ -57,7 +56,6 @@ body {
   background-repeat: no-repeat;
   margin: 20px auto;
   border-radius: 50%;
-  transform: translate(-35px, -20px);
 }
 
 #loader .mini-loader-container {
@@ -122,3 +120,16 @@ body {
     box-shadow: 0 2.5em 0 0;
   }
 }
+
+@media only screen and (min-width: 360px) and (max-width: 480px) {
+  /* CSS that applies for only mobile devices*/
+  #loader .content .label {
+      font-size: 36px;
+      transform:translate(-74px, -20px)
+
+}
+  #loader .logo {
+    transform:translate(-35px, -20px)
+  }
+}
+
