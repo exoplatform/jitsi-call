@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>addons-parent-pom</artifactId>
     <groupId>org.exoplatform.addons</groupId>
-    <version>15-M01</version>
+    <version>15-M03</version>
     <relativePath></relativePath>
   </parent>
   <groupId>org.exoplatform</groupId>
@@ -17,7 +17,7 @@
   <properties>
     <org.exoplatform.depmgt.version>20.x-maintenance-SNAPSHOT</org.exoplatform.depmgt.version>
     <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
-  
+
     <!-- Sonar properties -->
     <sonar.organization>exoplatform</sonar.organization>
   </properties>
@@ -53,7 +53,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
     </dependency>
-
     <dependency>
       <groupId>io.jsonwebtoken</groupId>
       <artifactId>jjwt-api</artifactId>
@@ -89,7 +88,7 @@
     <resources>
       <resource>
         <directory>${project.build.directory}/frontend</directory>
-        <filtering>true</filtering>
+        <filtering>false</filtering>
       </resource>
       <resource>
         <directory>${project.basedir}/src/main/resources</directory>
@@ -98,13 +97,21 @@
     </resources>
     <plugins>
       <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <configuration>
+          <workingDirectory>${project.basedir}/src/main/frontend</workingDirectory>
+          <installDirectory>${project.build.directory}/node</installDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>${spring-boot.version}</version>
         <configuration>
-          <folders>
-            <folder>${project.build.directory}/frontend</folder>
-          </folders>
+          <directories>
+            <directory>${project.build.directory}/frontend</directory>
+          </directories>
           <addResources>true</addResources>
         </configuration>
         <executions>
