@@ -37,6 +37,10 @@
   border-radius: 50%;
 }
 
+.invite-popup {
+  position: fixed;
+}
+
 /* loading animation*/
 
 #loader .mini-loader-container {
