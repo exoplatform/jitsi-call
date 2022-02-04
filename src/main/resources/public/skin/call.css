@@ -41,8 +41,6 @@
   position: fixed;
 }
 
-/* loading animation*/
-
 #loader .mini-loader-container {
   margin-top: 50px;
   font-size: 18px;
