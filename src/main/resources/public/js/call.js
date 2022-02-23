@@ -236,7 +236,7 @@ require([
           app.initExitScreen();
         }
       }, 250);
-      window.close();
+      webConferencing.closeWindow();
     };
     
     var subscribeUser = function(userId) {
@@ -491,7 +491,6 @@ require([
       window.addEventListener("beforeunload", beforeunloadListener);
     };
   };
-
   const meetApp = new MeetApp();
   meetApp.init();
 });
