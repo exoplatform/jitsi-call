@@ -11,17 +11,19 @@ export default {
   name: "ExitScreen" ,
   computed:{
     isMobile() {
-      return this.$vuetify.breakpoint.name === "xs" || this.$vuetify.breakpoint.name === "sm";
+      return navigator.userAgentData && navigator.userAgentData.mobile || (navigator.userAgent && /mobi/i.test(navigator.userAgent.toLowerCase())) || false;
     },
   },
   methods:{
     closeWindow(){
-      window.close() ; 
+      (window.require(["SHARED/webConferencing"],function(webConferencing){
+        webConferencing.closeWindow();
+      }))();
     }
-  }
+  },
 };
 </script>
- <style lang="less" scoped>
+<style lang="less" scoped>
 #exit-screen {
   position: absolute;
   top: 0;
