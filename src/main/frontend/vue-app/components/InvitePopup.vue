@@ -1,40 +1,28 @@
 <template>
   <div id="invite-popup">
-    <v-text-field
-      :value="url"
-      :style="linkStyle"
-      background-color="#0376da"
-      class="btn-copy"
-      append-icon="$copy"
-      solo
-      single-line
-      hide-details
-      dark
-      type="text"
-      readonly
-      @click="copyUrl"
-      @click:append="copyUrl"
-    ></v-text-field>
-    <v-text-field
-      :value="textLink"
-      :style="style"
-      background-color="#46a546"
-      class="btn-copy"
-      append-icon="$check"
-      solo
-      single-line
-      hide-details
-      dark
-      type="text"
-      readonly
-    ></v-text-field>
-    <input
-      ref="copyinput"
-      :value="url"
-      type="text"
-      style="opacity: 0; width: 160px; position: absolute; top: 0;"
-      class="btn-copy"
-    />
+    <v-btn
+      id="copy-paste-icon"
+      :title="hoverMsg"
+      icon
+      @click="displayMessage"
+      @click:append="displayMessage">
+      <div class="d-flex flex-lg-row flex-column">
+        <v-icon
+          color="primary"
+          class="align-self-start pe-1"
+          size="25">fas fa-light fa-copy
+        </v-icon>
+      </div>
+    </v-btn>
+    <v-alert
+      v-if="alert"
+      id="alertMessage"
+      type="success"
+      border="left"
+      colored-border
+      dismissible>
+      {{ textLinkMsg }}
+    </v-alert>
   </div>
 </template>
 <script>
@@ -48,8 +36,11 @@ export default {
   },
   data() {
     return {
+      hoverMsg: "Copy meeting link to copyboard",
       textLink: "Link copied to clipboard",
-      isClicked: false
+      active: false,
+      isClicked: false,
+      alert: false
     };
   },
   computed: {
@@ -58,7 +49,11 @@ export default {
     },
     linkStyle() {
       return this.isClicked ? "display: none" : "display: block";
+    },
+    textLinkMsg(){
+      return this.textLink;
     }
+
     //   color() {
     //     return this.isClicked ? "#46a546" : "#0376da";
     //   },
@@ -67,28 +62,33 @@ export default {
     //   }
   },
   methods: {
-    copyUrl() {
-      this.isClicked = !this.isClicked;
+    displayMessage(message,typeAlert) {
+      this.typeAlert=this.type;
+      this.alert = true;
+      this.message=this.textLinkMsg;
       // eslint-disable-next-line no-magic-numbers
-      setTimeout(() => (this.isClicked = !this.isClicked), 5000);
+      setTimeout(() => (this.alert = false), 5000);
       this.$refs.copyinput.select();
       document.execCommand("copy");
     }
+    /*displayMessage(message) {
+      this.isClicked = !this.isClicked;
+      this.type="success";
+      this.alert = true;
+      this.message=this.textLinkMsg;
+      window.setTimeout(() => (this.isClicked = !this.isClicked), 5000);
+      //window.setTimeout(() => this.alert = false, 5000);
+      // eslint-disable-next-line no-magic-numbers
+
+      this.$refs.copyinput.select();
+      document.execCommand("copy");
+    }*/
   }
 };
 </script>
 <style lang="less" scoped>
 @import "../../skin/less/variables.less";
-.btn-copy {
-  &.v-input {
-    &.v-text-field {
-      font-size: 14px;
-    }
-  }
-}
-.btn-copy {
-  cursor: pointer;
-}
+
 #invite-popup {
   position: absolute;
   bottom: 10%;
@@ -96,39 +96,11 @@ export default {
   transform: translateX(-50%);
   font-family: Helvetica, arial, sans-serif;
   font-weight: bold;
-  &.btn-copy {
-    cursor: pointer;
-  }
-  .v-text-field {
-    width: 370px;
-    cursor: pointer;
-  }
+
 }
-</style>
-<style scoped>
-.btn-copy.v-text-field >>> input {
-  text-overflow: ellipsis;
-  display: inline-block !important;
-  white-space: nowrap;
-  overflow: hidden;
-  margin-right: 25px;
-}
-</style>
-<style lang="less">
-#invite-popup {
-  input[readonly],
-  input[type="text"] {
-    background-color: transparent !important;
-    border: none;
-    margin-bottom: 0;
-    height: unset;
-    cursor: copy;
-    &:focus {
-      background: transparent;
-      box-shadow: none;
-      border: none;
-      outline: none;
-    }
-  }
+
+.v-alert__border--left, .v-alert__border--right {
+  bottom: 0;
+  top: 0;
 }
 </style>
