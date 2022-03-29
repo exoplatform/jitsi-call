@@ -15,6 +15,7 @@
       </div>
       <div class="d-flex flex-lg-row flex-column">
         <v-icon
+          id="icon-id"
           color="white"
           class="align-self-start pe-1"
           size="25">fas fa-light fa-copy
@@ -66,8 +67,13 @@ export default {
   //updated(){}
 
   mounted(){
-
-    this.changePosition();
+    const elementAutoHide = document.getElementById("jitsiConferenceFrame0").contentWindow.document.getElementById("autoHide");
+    console.log(elementAutoHide);
+    const icon = document.getElementById("icon-popup");
+    if (icon && elementAutoHide) {
+      console.log("icon:",icon);
+      //   elementAutoHide.firstChild.prepend(icon);
+    }
 
   },
 
@@ -81,20 +87,6 @@ export default {
       document.execCommand("copy");
     },
 
-
-
-    changePosition(){
-      const icon = document.getElementById("icon-popup");
-      console.log("icon:",icon);
-      const clonedIcon = icon.cloneNode(true);
-      console.log("clonedIcon:",clonedIcon);
-      /*icon.remove();*/
-      const wait = 5000;
-
-      setTimeout(this.waitInsert,wait);
-
-
-    },
     waitInsert(){
       const autoHide = document.getElementById("autoHide");
       console.log("autoHide",autoHide);
