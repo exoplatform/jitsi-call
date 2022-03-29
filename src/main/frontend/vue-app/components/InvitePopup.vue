@@ -3,6 +3,8 @@
     <v-btn
       id="icon-popup"
       :title="hoverMsg"
+      class="subject-text"
+      style="margin: 0 4px 4px 4px;border:0px;border-radius:3px;"
       icon
       @click="displayMessage"
       @click:append="displayMessage">
@@ -17,8 +19,8 @@
         <v-icon
           id="icon-id"
           color="white"
-          class="align-self-start pe-1"
-          size="25">fas fa-light fa-copy
+          class="align-self-start pe-1">
+          fas fa-light fa-copy
         </v-icon>
       </div>
     </v-btn>
@@ -67,12 +69,24 @@ export default {
   //updated(){}
 
   mounted(){
-    const elementAutoHide = document.getElementById("jitsiConferenceFrame0").contentWindow.document.getElementById("autoHide");
+    const iframe = document.getElementById("jitsiConferenceFrame0");
+    const elementAutoHide = iframe.contentWindow.document.getElementById("autoHide");
     console.log(elementAutoHide);
     const icon = document.getElementById("icon-popup");
     if (icon && elementAutoHide) {
+      //add vuetify-css in iframe
+      const link = iframe.contentWindow.document.createElement("link");
+      //set the attributes for link element
+      link.rel = "stylesheet";
+      link.type = "text/css";
+      link.href = "/eXoSkin/skin/css/vuetify/vuetify-all.css";
+
+      // Get HTML head element to append
+      // link element to it
+      iframe.contentWindow.document.getElementsByTagName("HEAD")[0].appendChild(link);
+
       console.log("icon:",icon);
-      //   elementAutoHide.firstChild.prepend(icon);
+      elementAutoHide.firstChild.prepend(icon);
     }
 
   },
@@ -100,12 +114,6 @@ export default {
 <style lang="less" scoped>
 @import "../../skin/less/variables.less";
 
-#icon-popup {
-  position: fixed;
-  bottom: 94.5%;
-  left: 42.5%;
-  background: none;
-}
 #vAlert {
   position: fixed;
   bottom: 5%;
