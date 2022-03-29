@@ -21,9 +21,7 @@ const vuetify = new Vuetify({
   },
 });
 
-const lang =
-  // eslint-disable-next-line no-extra-parens
-  (eXo && eXo.env && eXo.env.portal && eXo.env.portal.language) || "en";
+const lang = window.eXo && eXo.env && eXo.env.portal && eXo.env.portal.language || "en";
 const localePortlet = "locale.jitsi";
 const resourceBundleName = "jitsi";
 const url = `${eXo.env.portal.context}/${eXo.env.portal.rest}/i18n/bundle/${localePortlet}.${resourceBundleName}-${lang}.json`;
