@@ -40,7 +40,6 @@
 </template>
 
 <script>
-
 export default {
   props: {
     // eslint-disable-next-line vue/require-default-prop
@@ -65,30 +64,18 @@ export default {
     }
   },
 
-  //j'essaie de faire l'appele du change position dans update pour catcher l'element après le chargement de la DOM
-  //updated(){}
-
   mounted(){
     const iframe = document.getElementById("jitsiConferenceFrame0");
     const elementAutoHide = iframe.contentWindow.document.getElementById("autoHide");
-    console.log(elementAutoHide);
     const icon = document.getElementById("icon-popup");
     if (icon && elementAutoHide) {
-      //add vuetify-css in iframe
       const link = iframe.contentWindow.document.createElement("link");
-      //set the attributes for link element
       link.rel = "stylesheet";
       link.type = "text/css";
       link.href = "/eXoSkin/skin/css/vuetify/vuetify-all.css";
-
-      // Get HTML head element to append
-      // link element to it
       iframe.contentWindow.document.getElementsByTagName("HEAD")[0].appendChild(link);
-
-      console.log("icon:",icon);
       elementAutoHide.firstChild.prepend(icon);
     }
-
   },
 
   methods: {
@@ -100,15 +87,9 @@ export default {
       this.$refs.copyinput.select();
       document.execCommand("copy");
     },
-
-    waitInsert(){
-      const autoHide = document.getElementById("autoHide");
-      console.log("autoHide",autoHide);
-      insertAfter(clonedIcon, autoHide);
-    }
-
   }
 };
+
 </script>
 
 <style lang="less" scoped>
