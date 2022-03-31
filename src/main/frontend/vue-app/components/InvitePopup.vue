@@ -1,19 +1,20 @@
 <template>
-  <v-app >
+  <v-app>
     <v-btn
       id="icon-popup"
       :title="hoverMsg"
       class="subject-text"
       style="margin: 0 4px 4px 4px;border:0px;border-radius:3px;"
       icon
-      @click="displayMessage"
-      @click:append="displayMessage">
+      @click="displayMessage">
       <div>
         <input
+          id="inputURL"
           ref="copyinput"
           :value="url"
           type="text"
-          style="opacity: 0; width: 20px; position: absolute; top: 0;"/>
+          style="opacity: 0; width: 20px; position: absolute; top: 0;"
+        />
       </div>
       <div class="d-flex flex-lg-row flex-column">
         <v-icon
@@ -84,9 +85,10 @@ export default {
       this.message=this.textLinkMsg;
       // eslint-disable-next-line no-magic-numbers
       setTimeout(() => (this.alert = false), 5000);
-      this.$refs.copyinput.select();
-      document.execCommand("copy");
-    },
+      const iframe = document.getElementById("jitsiConferenceFrame0");
+      iframe.contentWindow.document.getElementById("inputURL").select();
+      iframe.contentWindow.document.execCommand("copy");
+    }
   }
 };
 
