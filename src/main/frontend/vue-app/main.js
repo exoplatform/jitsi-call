@@ -1,15 +1,15 @@
 // import "material-design-icons-iconfont/dist/material-design-icons.css";
 import Vue from "vue";
+import Vuetify from "vuetify";
 import App from "./App.vue";
 import InvitePopup from "./components/InvitePopup.vue";
 import SignInScreen from "./components/SignInScreen.vue";
 import ExitScreen from "./components/ExitScreen.vue";
-import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
 
 //Vue.config.productionTip = false
-Vue.use(Vuetify);
-const vuetify = new Vuetify({
+window.Vue.use(window.Vuetify);
+const vuetify = new window.Vuetify({
   dark: true,
   icons: {
     iconfont: "mdi",
@@ -29,7 +29,7 @@ const url = `/portal/rest/i18n/bundle/${localePortlet}.${resourceBundleName}-${l
 export function init() {
   // getting locale ressources
   // return exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
-  return new Vue({
+  return new window.Vue({
     el: "#app",
     components: {
       App,
@@ -44,7 +44,7 @@ export function init() {
 export function initCallLink(url) {
   // getting locale ressources
   // return exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
-  return new Vue({
+  return new window.Vue({
     el: "#invite-popup",
     components: {
       InvitePopup,
@@ -62,7 +62,7 @@ export function initCallLink(url) {
 
 export function initSignInScreen(hideLoader, showLoader) {
   const result = new Promise((resolve, reject) => {
-    new Vue({
+    new window.Vue({
       el: "#signin-popup",
       components: {
         SignInScreen,
@@ -95,7 +95,7 @@ export function initSignInScreen(hideLoader, showLoader) {
 
 export function initExitScreen() {
   const result = new Promise((resolve, reject) => {
-    new Vue({
+    new window.Vue({
       el: "#exit-screen",
       components: {
         ExitScreen,
