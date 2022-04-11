@@ -12,9 +12,6 @@ let config = {
     filename: "js/[name].bundle.js",
     libraryTarget: "amd",
   },
-  optimization: {
-      minimize: false
-  },
   module: {
     rules: [
       {
