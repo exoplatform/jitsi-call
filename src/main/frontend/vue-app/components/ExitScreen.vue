@@ -2,25 +2,12 @@
   <v-app id="exit-screen" ref="exitscreen">
     <img src="/jitsi/images/logo.png " />
     <p>This call already finished. Now you can close this window.</p>
-    <v-btn v-if="isMobile" color="primary" @click="closeWindow">close</v-btn>
   </v-app>
 </template>
 
 <script>
 export default {
   name: "ExitScreen" ,
-  computed:{
-    isMobile() {
-      return navigator.userAgentData && navigator.userAgentData.mobile || (navigator.userAgent && /mobi/i.test(navigator.userAgent.toLowerCase())) || false;
-    },
-  },
-  methods:{
-    closeWindow(){
-      (window.require(["SHARED/webConferencing"],function(webConferencing){
-        webConferencing.closeWindow();
-      }))();
-    }
-  },
 };
 </script>
 <style lang="less" scoped>
