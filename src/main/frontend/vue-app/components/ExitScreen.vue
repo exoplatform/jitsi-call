@@ -2,23 +2,12 @@
   <v-app id="exit-screen" ref="exitscreen">
     <img src="/jitsi/images/logo.png " />
     <p>This call already finished. Now you can close this window.</p>
-    <v-btn v-if="isMobile" color="primary" @click="closeWindow">close</v-btn>
   </v-app>
 </template>
 
 <script>
 export default {
   name: "ExitScreen" ,
-  computed:{
-    isMobile() {
-      return this.$vuetify.breakpoint.name === "xs" || this.$vuetify.breakpoint.name === "sm";
-    },
-  },
-  methods:{
-    closeWindow(){
-      window.close() ; 
-    }
-  }
 };
 </script>
  <style lang="less" scoped>
