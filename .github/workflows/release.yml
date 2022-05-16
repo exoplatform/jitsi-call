@@ -4,7 +4,7 @@ on:
     tags:
       - '*'
 env:
-  TARGET_BRANCH: master
+  TARGET_BRANCH: 1.2.x
   DOCKER_REPO_GIT_URL: "git@github.com:exo-docker/jitsi-call.git"
 jobs:
   create-tag:
