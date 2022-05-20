@@ -297,20 +297,24 @@ require([
           },
           interfaceConfigOverwrite: {
             TOOLBAR_BUTTONS: [
-              "microphone",
-              "chat",
-              "camera",
               "desktop",
-              "fullscreen",
-              "fodeviceselection",
+              "camera",
+              "chat",
               "hangup",
+              "fullscreen",
+              "microphone",
+              "mute-everyone",
+              "mute-video-everyone",
+              "participants-pane",
               "profile",
-              "sharedvideo",
+              "raisehand",
               "settings",
-              "videoquality",
+              "security",
+              "select-background",
               "tileview",
-              "videobackgroundblur",
-              "mute-everyone"
+              "toggle-camera",
+              "videoquality",
+              "closedcaptions"
             ],
             JITSI_WATERMARK_LINK: "",
             SETTINGS_SECTIONS: settings
