@@ -16,7 +16,7 @@
           <v-card-actions>
             <v-btn
               :elevation="0"
-              color="#578dc9"
+              color="#476A9C"
               large
               class="ui-action"
               @click="eXoUserJoining">Sign In</v-btn>
