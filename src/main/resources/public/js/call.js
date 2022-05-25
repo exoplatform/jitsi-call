@@ -314,7 +314,9 @@ require([
               "tileview",
               "toggle-camera",
               "videoquality",
-              "closedcaptions"
+              "closedcaptions",
+              "sharedvideo",
+              "shareaudio"
             ],
             JITSI_WATERMARK_LINK: "",
             SETTINGS_SECTIONS: settings
