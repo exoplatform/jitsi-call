@@ -234,6 +234,7 @@ require([
       setTimeout(() => {
         if (!window.closed) {
           // If not already closed we show the exit message to the user
+          console.log('[Jitsi] error: Scripts may not close windows that were not opened by script.');
           app.initExitScreen();
         }
       }, 250);
