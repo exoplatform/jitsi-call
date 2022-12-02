@@ -182,7 +182,7 @@ require([
       $loader.find(".label").html(join ? "You are joining" : "You are calling");
 
       if (call.owner.group) {
-        var link = call.owner.avatarLink;
+        var link = call.owner.avatarLink + "&size=200x200";
         $loader.find(".logo").css("background-image", "url(" + link + ")");
         let groupTitle;
         if (call.title) {
@@ -194,6 +194,7 @@ require([
       } else {
         for (var i = 0; i < call.participants.length; i++) {
           // not current user
+          call.participants[i].avatarLink = call.participants[i].avatarLink + "&size=200x200";
           if (call.participants[i].id != userId) {
             var link = call.participants[i].avatarLink;
             $loader.find(".logo").css("background-image", "url(" + link + ")");
@@ -268,7 +269,7 @@ require([
         apiUrl.lastIndexOf("/external_api.js")
       );
       var name = userinfo.firstName + " " + userinfo.lastName;
-      const avatarLink = window.location.origin + userinfo.avatarLink;
+      const avatarLink = window.location.origin + userinfo.avatarLink + "&size=200x200";
       if (isGuest) {
         name += " (guest)";
       }
