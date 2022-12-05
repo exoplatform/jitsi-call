@@ -16,7 +16,7 @@
 
   <properties>
     <org.exoplatform.depmgt.version>21.x-security-fix-SNAPSHOT</org.exoplatform.depmgt.version>
-    <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
+    <spring-boot.version>2.7.6</spring-boot.version>
 
     <!-- Sonar properties -->
     <sonar.organization>exoplatform</sonar.organization>
@@ -85,6 +85,7 @@
   </dependencies>
 
   <build>
+    <finalName>${project.artifactId}</finalName>
     <resources>
       <resource>
         <directory>${project.basedir}/src/main/resources</directory>
