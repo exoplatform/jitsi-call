@@ -16,8 +16,7 @@
 
   <properties>
     <org.exoplatform.depmgt.version>21.x-exo-SNAPSHOT</org.exoplatform.depmgt.version>
-    <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
-
+    <spring-boot.version>2.7.6</spring-boot.version>
     <!-- Sonar properties -->
     <sonar.organization>exoplatform</sonar.organization>
   </properties>
