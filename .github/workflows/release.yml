@@ -10,6 +10,13 @@ jobs:
   create-tag:
     runs-on: ubuntu-latest
     steps:
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.SWF_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SWF_GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
