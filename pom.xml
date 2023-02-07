@@ -5,17 +5,17 @@
   <parent>
     <artifactId>addons-exo-parent-pom</artifactId>
     <groupId>org.exoplatform.addons</groupId>
-    <version>17-M04</version>
+    <version>17-devx-SNAPSHOT</version>
     <relativePath></relativePath>
   </parent>
   <groupId>org.exoplatform</groupId>
   <artifactId>jitsi-call</artifactId>
   <name>eXo Jitsi :: Call App :: Jitsi</name>
   <description>Jitsi Microservice</description>
-  <version>1.4.x-SNAPSHOT</version>
+  <version>1.4.x-devx-SNAPSHOT</version>
 
   <properties>
-    <org.exoplatform.commons-exo.version>6.5.x-SNAPSHOT</org.exoplatform.commons-exo.version>
+    <org.exoplatform.commons-exo.version>6.5.x-devx-SNAPSHOT</org.exoplatform.commons-exo.version>
     <spring-boot.version>2.7.6</spring-boot.version>
     <spring-context.version>5.3.24</spring-context.version>
 
