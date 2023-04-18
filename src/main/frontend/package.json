@@ -58,6 +58,6 @@
   "dependencies": {
     "anchorme": "^1.1.2",
     "autosize": "^4.0.4",
-    "transliteration": "^2.2.0"
+    "transliteration": "^2.3.5"
   }
 }
