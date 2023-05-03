@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>addons-parent-pom</artifactId>
+    <artifactId>addons-parent-exo-pom</artifactId>
     <groupId>org.exoplatform.addons</groupId>
-    <version>17-exo-M01</version>
+    <version>17-security-fix-SNAPSHOT</version>
     <relativePath></relativePath>
   </parent>
   <groupId>org.exoplatform</groupId>
@@ -15,8 +15,10 @@
   <version>1.4.x-SNAPSHOT</version>
 
   <properties>
-    <org.exoplatform.depmgt.version>21.x-exo-SNAPSHOT</org.exoplatform.depmgt.version>
+    <org.exoplatform.commons-exo.version>6.5.x-security-fix-SNAPSHOT</org.exoplatform.commons-exo.version>
     <spring-boot.version>2.7.6</spring-boot.version>
+    <spring-context.version>5.3.24</spring-context.version>
+
     <exo.test.coverage.ratio>0.24</exo.test.coverage.ratio>
 
     <!-- Sonar properties -->
@@ -27,9 +29,9 @@
     <dependencies>
       <!-- Import versions of external dependencies to use -->
       <dependency>
-        <groupId>org.exoplatform</groupId>
-        <artifactId>maven-depmgt-pom</artifactId>
-        <version>${org.exoplatform.depmgt.version}</version>
+        <groupId>org.exoplatform.commons-exo</groupId>
+        <artifactId>commons-exo</artifactId>
+        <version>${org.exoplatform.commons-exo.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -41,6 +43,13 @@
         <version>${spring-boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring-context.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
