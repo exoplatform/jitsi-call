@@ -5,7 +5,7 @@
   <parent>
     <artifactId>addons-exo-parent-pom</artifactId>
     <groupId>org.exoplatform.addons</groupId>
-    <version>17-security-fix-SNAPSHOT</version>
+    <version>17-M01</version>
     <relativePath></relativePath>
   </parent>
   <groupId>org.exoplatform</groupId>
@@ -15,7 +15,7 @@
   <version>1.4.x-SNAPSHOT</version>
 
   <properties>
-    <org.exoplatform.commons-exo.version>6.5.x-security-fix-SNAPSHOT</org.exoplatform.commons-exo.version>
+    <org.exoplatform.commons-exo.version>6.5.x-SNAPSHOT</org.exoplatform.commons-exo.version>
     <spring-boot.version>2.7.6</spring-boot.version>
     <spring-context.version>5.3.24</spring-context.version>
 
