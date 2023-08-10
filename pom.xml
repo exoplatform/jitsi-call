@@ -15,7 +15,7 @@
   <version>1.4.x-SNAPSHOT</version>
 
   <properties>
-    <org.exoplatform.commons-exo.version>6.5.x-SNAPSHOT</org.exoplatform.commons-exo.version>
+    <org.exoplatform.commons-exo.version>6.5.0-20230810</org.exoplatform.commons-exo.version>
     <spring-boot.version>2.7.6</spring-boot.version>
     <spring-context.version>5.3.24</spring-context.version>
 
