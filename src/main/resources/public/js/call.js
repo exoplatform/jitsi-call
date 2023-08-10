@@ -318,7 +318,8 @@ require([
               "videoquality",
               "closedcaptions",
               "sharedvideo",
-              "shareaudio"
+              "shareaudio",
+              "whiteboard"
             ],
             JITSI_WATERMARK_LINK: "",
             SETTINGS_SECTIONS: settings
