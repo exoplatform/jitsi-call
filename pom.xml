@@ -12,10 +12,10 @@
   <artifactId>jitsi-call</artifactId>
   <name>eXo Jitsi :: Call App :: Jitsi</name>
   <description>Jitsi Microservice</description>
-  <version>1.4.x-SNAPSHOT</version>
+  <version>1.5.x-SNAPSHOT</version>
 
   <properties>
-    <org.exoplatform.commons-exo.version>6.5.x-SNAPSHOT</org.exoplatform.commons-exo.version>
+    <org.exoplatform.commons-exo.version>6.6.x-SNAPSHOT</org.exoplatform.commons-exo.version>
     <spring-boot.version>2.7.6</spring-boot.version>
     <spring-context.version>5.3.24</spring-context.version>
 
