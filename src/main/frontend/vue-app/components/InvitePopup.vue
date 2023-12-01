@@ -26,16 +26,6 @@
       </div>
     </v-btn>
 
-    <div id="vAlert">
-      <v-alert
-        v-if="alert"
-        type="success"
-        border="left"
-        colored-border
-        dismissible>
-        {{ textLinkMsg }}
-      </v-alert>
-    </div>
 
   </v-app>
 </template>
@@ -55,7 +45,6 @@ export default {
       textLink: "Link copied to clipboard",
       hoverMsg: "Copy meeting link to copyboard",
       type:"",
-      alert: false
     };
   },
 
@@ -81,10 +70,8 @@ export default {
 
   methods: {
     displayMessage() {
-      this.alert = true;
-      this.message=this.textLinkMsg;
+      this.$root.$emit("alert-message", this.textLinkMsg, "success");
       // eslint-disable-next-line no-magic-numbers
-      setTimeout(() => (this.alert = false), 5000);
       const iframe = document.getElementById("jitsiConferenceFrame0");
       iframe.contentWindow.document.getElementById("inputURL").select();
       iframe.contentWindow.document.execCommand("copy");
@@ -93,14 +80,3 @@ export default {
 };
 
 </script>
-
-<style lang="less" scoped>
-@import "../../skin/less/variables.less";
-
-#vAlert {
-  position: fixed;
-  bottom: 5%;
-  left: 2%;
-  background: none;
-}
-</style>
