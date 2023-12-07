@@ -5,17 +5,17 @@
   <parent>
     <artifactId>addons-exo-parent-pom</artifactId>
     <groupId>org.exoplatform.addons</groupId>
-    <version>18-M02</version>
+    <version>18-mips-SNAPSHOT</version>
     <relativePath></relativePath>
   </parent>
   <groupId>org.exoplatform</groupId>
   <artifactId>jitsi-call</artifactId>
   <name>eXo Jitsi :: Call App :: Jitsi</name>
   <description>Jitsi Microservice</description>
-  <version>1.5.x-SNAPSHOT</version>
+  <version>1.5.x-mips-SNAPSHOT</version>
 
   <properties>
-    <org.exoplatform.commons-exo.version>6.6.x-SNAPSHOT</org.exoplatform.commons-exo.version>
+    <org.exoplatform.commons-exo.version>6.6.x-mips-SNAPSHOT</org.exoplatform.commons-exo.version>
 
     <exo.test.coverage.ratio>0.24</exo.test.coverage.ratio>
 
