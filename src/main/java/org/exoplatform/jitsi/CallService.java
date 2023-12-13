@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.collections4.map.PassiveExpiringMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
 /**
  * The Class CallService is used to handle CallInfo and upload links for recordings.
