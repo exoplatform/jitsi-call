@@ -344,10 +344,11 @@ require([
           });
         });
         api.addEventListener("participantRoleChanged", event => {
-          const inviteLink = provider.getInviteLink(call);
-          if (!isGuest) {
-            app.initCallLink(inviteLink);
-          }
+          provider.getInviteLink(call).then((inviteLink) => {
+            if (!isGuest) {
+              app.initCallLink(inviteLink);
+            }
+          });
           api.executeCommand("displayName", name);
           // For recording feature
           if (event.role === "moderator") {
