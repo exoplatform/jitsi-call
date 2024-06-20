@@ -277,7 +277,7 @@ require([
         var roomTitle = getRoomTitle(call);
         var tabTitle = getTabTitle(call, userinfo.id);
         window.document.title = tabTitle;
-        var settings = ["devices", "language", "moderator"];
+        var settings = ["devices", "language", "moderator", "more"];
         if (isGuest) {
           settings.push("profile");
         }
