@@ -62,7 +62,7 @@ export default {
       const link = iframe.contentWindow.document.createElement("link");
       link.rel = "stylesheet";
       link.type = "text/css";
-      link.href = "/eXoSkin/skin/css/vuetify/vuetify-all.css";
+      link.href = "/platform-ui/skin/css/vuetify-all.css";
       iframe.contentWindow.document.getElementsByTagName("HEAD")[0].appendChild(link);
       elementAutoHide.firstChild.prepend(icon);
     }
