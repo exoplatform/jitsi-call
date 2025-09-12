@@ -1,6 +1,6 @@
 <template>
   <v-app id="exit-screen" ref="exitscreen">
-    <img src="/jitsi/images/logo.png " />
+    <img src="/portal/rest/v1/platform/branding/logo" />
     <p>This call already finished. Now you can close this window.</p>
   </v-app>
 </template>

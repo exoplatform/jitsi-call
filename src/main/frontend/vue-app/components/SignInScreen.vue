@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <img src="/jitsi/images/logo.png ">
+    <img src="/portal/rest/v1/platform/branding/logo">
     <div id="signin-popup" ref="signinpopup">
       <div v-show="showDialog" class="background"></div>
       <v-dialog
