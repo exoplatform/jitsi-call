@@ -12,16 +12,16 @@
         persistent
         no-click-animation>
         <v-card dark>
-          <v-card-text>Sign In to join the call as eXo user</v-card-text>
+          <v-card-text>{{ $t('exoplatform.jitsi-call.signInToJoin') }}</v-card-text>
           <v-card-actions>
             <v-btn
               :elevation="0"
               color="#476A9C"
               large
               class="ui-action"
-              @click="eXoUserJoining">Sign In</v-btn>
+              @click="eXoUserJoining">{{ $t('exoplatform.jitsi-call.signIn') }}</v-btn>
           </v-card-actions>
-          <v-card-text class="text-guest">Or request to join as a Guest</v-card-text>
+          <v-card-text class="text-guest">{{ $t('exoplatform.jitsi-call.requestToJoinAsGues') }}</v-card-text>
           <v-card-actions style="flex-flow: column;">
             <div style="position: relative; width: 100%;">
               <v-text-field

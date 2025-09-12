@@ -42,8 +42,8 @@ export default {
 
   data() {
     return {
-      textLink: "Link copied to clipboard",
-      hoverMsg: "Copy meeting link to copyboard",
+      textLink: $t('exoplatform.jitsi-call.copiedLinkConfirmation'),
+      hoverMsg: $t('exoplatform.jitsi-call.copyLink'),
       type:"",
     };
   },
