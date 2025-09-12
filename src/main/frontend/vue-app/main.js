@@ -22,7 +22,7 @@ const vuetify = new window.Vuetify({
 });
 
 const lang = window.eXo && eXo.env && eXo.env.portal && eXo.env.portal.language || "en";
-const localePortlet = "locale.jitsi";
+const localePortlet = "locale.addon";
 const resourceBundleName = "jitsi-call";
 const url = `/portal/rest/i18n/bundle/${localePortlet}.${resourceBundleName}-${lang}.json`;
 
