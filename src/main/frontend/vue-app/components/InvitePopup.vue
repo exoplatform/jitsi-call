@@ -42,8 +42,8 @@ export default {
 
   data() {
     return {
-      textLink: this.$t('exoplatform.jitsi-call.copiedLinkConfirmation'),
-      hoverMsg: this.$t('exoplatform.jitsi-call.copyLink'),
+      textLink: "{{ $t('exoplatform.jitsi-call.copiedLinkConfirmation') }}",
+      hoverMsg: "{{ $t('exoplatform.jitsi-call.copyLink') }}",
       type:"",
     };
   },
