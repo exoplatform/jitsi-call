@@ -27,17 +27,17 @@ const resourceBundleName = "jitsi-call";
 const url = `/portal/rest/i18n/bundle/${localePortlet}.${resourceBundleName}-${lang}.json`;
 
 export function init() {
-  // getting locale ressources
-  // return exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
-  return new window.Vue({
-    el: "#app",
-    components: {
-      App,
-    },
-    vuetify,
-    render: function(h) {
-      return h(App);
-    },
+  // Getting locale resources
+  exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
+    return new window.Vue({
+      el: "#app",
+      components: {
+        App,
+      },
+      vuetify,
+      i18n, // Add i18n to the Vue instance
+      render: (h) => h(App),
+    });
   });
 }
 
