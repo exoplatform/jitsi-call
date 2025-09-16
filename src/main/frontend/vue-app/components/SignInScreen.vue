@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <img src="/jitsi/images/logo.png ">
+    <img :alt="$t('signIn.logoAlt')" src="/jitsi/images/logo.png" />
     <div id="signin-popup" ref="signinpopup">
       <div v-show="showDialog" class="background"></div>
       <v-dialog
@@ -12,35 +12,40 @@
         persistent
         no-click-animation>
         <v-card dark>
-          <v-card-text>Sign In to join the call as eXo user</v-card-text>
+          <v-card-text>{{ $t('signIn.signInMessage') }}</v-card-text>
           <v-card-actions>
             <v-btn
               :elevation="0"
               color="#476A9C"
               large
               class="ui-action"
-              @click="eXoUserJoining">Sign In</v-btn>
+              @click="eXoUserJoining">
+              {{ $t('signIn.signInBtn') }}
+            </v-btn>
           </v-card-actions>
-          <v-card-text class="text-guest">Or request to join as a Guest</v-card-text>
+          <v-card-text class="text-guest">{{ $t('signIn.guestMessage') }}</v-card-text>
           <v-card-actions style="flex-flow: column;">
             <div style="position: relative; width: 100%;">
               <v-text-field
                 ref="textfield"
                 v-model="fullName"
+                :label="$t('signIn.fullNameLabel')"
                 light
                 prepend-inner-icon="$account"
                 type="text"
                 class="ui-action"
-                label="Full name"
                 hide-details
                 color="#999"
                 dense
                 solo
                 flat
-                required></v-text-field>
+                required
+              ></v-text-field>
               <i class="uiIconUser"></i>
             </div>
-            <v-btn class="ui-action" large outlined @click="guestJoining">Join as Guest</v-btn>
+            <v-btn class="ui-action" large outlined @click="guestJoining">
+              {{ $t('signIn.joinAsGuest') }}
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>

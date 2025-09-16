@@ -1,7 +1,7 @@
 <template>
   <v-app id="exit-screen" ref="exitscreen">
-    <img src="/jitsi/images/logo.png " />
-    <p>This call already finished. Now you can close this window.</p>
+    <img :alt="$t('exitScreen.logoAlt')" src="/jitsi/images/logo.png" />
+    <p>{{ $t('exitScreen.message') }}</p>
   </v-app>
 </template>
 

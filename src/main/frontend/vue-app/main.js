@@ -1,4 +1,3 @@
-// import "material-design-icons-iconfont/dist/material-design-icons.css";
 import Vue from "vue";
 import Vuetify from "vuetify";
 import App from "./App.vue";
@@ -7,104 +6,81 @@ import SignInScreen from "./components/SignInScreen.vue";
 import ExitScreen from "./components/ExitScreen.vue";
 import "vuetify/dist/vuetify.min.css";
 
-//Vue.config.productionTip = false
-window.Vue.use(window.Vuetify);
-const vuetify = new window.Vuetify({
+Vue.use(Vuetify);
+const vuetify = new Vuetify({
   dark: true,
   icons: {
     iconfont: "mdi",
     values: {
       copy: "mdi-content-copy",
       check: "mdi-check",
-      account: "mdi-account"
-    }
+      account: "mdi-account",
+    },
   },
 });
 
 const lang = window.eXo && eXo.env && eXo.env.portal && eXo.env.portal.language || "en";
-const localePortlet = "locale.jitsi";
-const resourceBundleName = "jitsi";
-const url = `/portal/rest/i18n/bundle/${localePortlet}.${resourceBundleName}-${lang}.json`;
+const resourceBundleName = "jitsi-call";
+const url = `/jitsi/api/v1/lang/${lang}`;
 
-export function init() {
-  // getting locale ressources
-  // return exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
-  return new window.Vue({
-    el: "#app",
-    components: {
-      App,
-    },
-    vuetify,
-    render: function(h) {
-      return h(App);
-    },
-  });
-}
+// Main init function
+export function init(settings = {}) {
+  exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
+    const props = Object.assign({}, settings, {
+      i18n,
+      language: lang,
+      resourceBundleName,
+    });
 
-export function initCallLink(url) {
-  // getting locale ressources
-  // return exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
-  return new window.Vue({
-    el: "#invite-popup",
-    components: {
-      InvitePopup,
-    },
-    vuetify,
-    render: function(h) {
-      return h(InvitePopup, {
-        props: {
-          url: url,
-        },
-      });
-    },
-  });
-}
-
-export function initSignInScreen(hideLoader, showLoader) {
-  const result = new Promise((resolve, reject) => {
-    new window.Vue({
-      el: "#signin-popup",
-      components: {
-        SignInScreen,
-      },
-      created() {
-        hideLoader();
-      },
+    // Root App
+    new Vue({
+      render: h => h(App, { props }),
+      i18n,
       vuetify,
-      render: function(h) {
-        const thevue = this;
-        return h(SignInScreen, {
+    }).$mount("#app");
+  });
+}
+
+// Invite popup
+export function initCallLink(inviteUrl, settings = {}) {
+  exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
+    const props = Object.assign({}, settings, { i18n, url: inviteUrl });
+    new Vue({
+      render: h => h(InvitePopup, { props }),
+      i18n,
+      vuetify,
+    }).$mount("#invite-popup");
+  });
+}
+
+// Sign-in screen
+export function initSignInScreen(hideLoader, showLoader, settings = {}) {
+  exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
+    const props = Object.assign({}, settings, { i18n });
+    new Vue({
+      render: h =>
+        h(SignInScreen, {
+          props,
           on: {
-            exouserjoin: function(){
-              showLoader();
-              resolve();
-              thevue.$destroy();
-            },
-            guestjoin: function($event){
-              showLoader();
-              reject($event);
-              thevue.$destroy();
-            },
-          }
-        });
-      },
-    });
+            exouserjoin: () => showLoader(),
+            guestjoin: () => showLoader(),
+          },
+        }),
+      i18n,
+      vuetify,
+    }).$mount("#signin-popup");
+    hideLoader();
   });
-  return result;
 }
 
-export function initExitScreen() {
-  const result = new Promise((resolve, reject) => {
-    new window.Vue({
-      el: "#exit-screen",
-      components: {
-        ExitScreen,
-      },
+// Exit screen
+export function initExitScreen(settings = {}) {
+  exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
+    const props = Object.assign({}, settings, { i18n });
+    new Vue({
+      render: h => h(ExitScreen, { props }),
+      i18n,
       vuetify,
-      render: function(h) {
-        return h(ExitScreen);
-      },
-    });
+    }).$mount("#exit-screen");
   });
-  return result;
 }

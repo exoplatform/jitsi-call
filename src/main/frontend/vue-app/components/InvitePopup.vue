@@ -2,7 +2,7 @@
   <v-app>
     <v-btn
       id="icon-popup"
-      :title="hoverMsg"
+      :title="$t('invitePopup.hoverMsg')"
       class="subject-text"
       style="margin: 0 4px 4px 4px;border:0px;border-radius:3px;"
       icon
@@ -70,11 +70,15 @@ export default {
 
   methods: {
     displayMessage() {
-      this.$root.$emit("alert-message", this.textLinkMsg, "success");
-      // eslint-disable-next-line no-magic-numbers
+      this.$root.$emit("alert-message", this.$t("invitePopup.linkCopied"), "success");
       const iframe = document.getElementById("jitsiConferenceFrame0");
-      iframe.contentWindow.document.getElementById("inputURL").select();
-      iframe.contentWindow.document.execCommand("copy");
+      if (iframe && iframe.contentWindow && iframe.contentWindow.document) {
+        const input = iframe.contentWindow.document.getElementById("inputURL");
+        if (input) {
+          input.select();
+          iframe.contentWindow.document.execCommand("copy");
+        }
+      }
     }
   }
 };

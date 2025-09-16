@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+
 import org.exoplatform.jitsi.CallInfo;
 import org.exoplatform.jitsi.CallService;
 import org.exoplatform.jitsi.TokenService;
@@ -103,6 +108,17 @@ public class APIController {
       return ResponseEntity.ok(uploadLink);
     }
     return ResponseEntity.badRequest().build();
+  }
+
+  @GetMapping("/lang/{lang}")
+  public Map<String, String> getMessages(@PathVariable("lang") String lang) {
+    Locale locale = Locale.forLanguageTag(lang);
+    ResourceBundle bundle = ResourceBundle.getBundle("locale.jitsi-call.jitsi-call", locale);
+
+    Map<String, String> messages = new HashMap<>();
+    bundle.keySet().forEach(key -> messages.put(key, bundle.getString(key)));
+
+    return messages;
   }
 
   /**

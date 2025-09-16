@@ -1,14 +1,14 @@
 <template>
   <div id="meet">
+    <h1>{{ $t('call.title') }}</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name : "Call",
-  data () {
+  name: "Call",
+  data() {
     return {
-      title: "eXo Jitsi Call",
       backendResponse: [],
       errors: []
     };
