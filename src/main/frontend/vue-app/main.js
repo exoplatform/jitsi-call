@@ -1,3 +1,4 @@
+// import "material-design-icons-iconfont/dist/material-design-icons.css";
 import Vue from "vue";
 import Vuetify from "vuetify";
 import App from "./App.vue";
@@ -6,81 +7,84 @@ import SignInScreen from "./components/SignInScreen.vue";
 import ExitScreen from "./components/ExitScreen.vue";
 import "vuetify/dist/vuetify.min.css";
 
-Vue.use(Vuetify);
-const vuetify = new Vuetify({
+window.Vue.use(window.Vuetify);
+
+const vuetify = new window.Vuetify({
   dark: true,
   icons: {
     iconfont: "mdi",
     values: {
       copy: "mdi-content-copy",
       check: "mdi-check",
-      account: "mdi-account",
-    },
+      account: "mdi-account"
+    }
   },
 });
 
 const lang = window.eXo && eXo.env && eXo.env.portal && eXo.env.portal.language || "en";
-const resourceBundleName = "jitsi-call";
-const url = `/jitsi/api/v1/lang/${lang}`;
 
-// Main init function
-export function init(settings = {}) {
-  exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
-    const props = Object.assign({}, settings, {
+const langUrl = `/jitsi/api/v1/lang/${lang}`;
+
+// init main app
+export function init(exoi18n) {
+  return exoi18n.loadLanguageAsync(lang, langUrl).then(i18n => {
+    return new window.Vue({
+      el: "#app",
+      components: { App },
+      vuetify,
       i18n,
-      language: lang,
-      resourceBundleName,
+      render: h => h(App),
     });
-
-    // Root App
-    new Vue({
-      render: h => h(App, { props }),
-      i18n,
-      vuetify,
-    }).$mount("#app");
   });
 }
 
-// Invite popup
-export function initCallLink(inviteUrl, settings = {}) {
-  exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
-    const props = Object.assign({}, settings, { i18n, url: inviteUrl });
-    new Vue({
-      render: h => h(InvitePopup, { props }),
-      i18n,
+// init invite popup
+export function initCallLink(meetingUrl, exoi18n) {
+  return exoi18n.loadLanguageAsync(lang, langUrl).then(i18n => {
+    return new window.Vue({
+      el: "#invite-popup",
+      components: { InvitePopup },
       vuetify,
-    }).$mount("#invite-popup");
+      i18n,
+      render: h => h(InvitePopup, { props: { url: meetingUrl } }),
+    });
   });
 }
 
-// Sign-in screen
-export function initSignInScreen(hideLoader, showLoader, settings = {}) {
-  exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
-    const props = Object.assign({}, settings, { i18n });
-    new Vue({
-      render: h =>
-        h(SignInScreen, {
-          props,
-          on: {
-            exouserjoin: () => showLoader(),
-            guestjoin: () => showLoader(),
-          },
-        }),
-      i18n,
-      vuetify,
-    }).$mount("#signin-popup");
-    hideLoader();
+// init sign-in screen
+export function initSignInScreen(hideLoader, showLoader, exoi18n) {
+  return exoi18n.loadLanguageAsync(lang, langUrl).then(i18n => {
+    return new Promise((resolve, reject) => {
+      new window.Vue({
+        el: "#signin-popup",
+        components: { SignInScreen },
+        created() { hideLoader(); },
+        vuetify,
+        i18n,
+        render(h) {
+          return h(SignInScreen, {
+            on: {
+              exouserjoin: () => { showLoader(); resolve(); this.$destroy(); },
+              guestjoin: ($event) => { showLoader(); reject($event); this.$destroy(); },
+            }
+          });
+        },
+      });
+    });
   });
 }
 
-// Exit screen
-export function initExitScreen(settings = {}) {
-  exoi18n.loadLanguageAsync(lang, url).then((i18n) => {
-    const props = Object.assign({}, settings, { i18n });
-    new Vue({
-      render: h => h(ExitScreen, { props }),
-      i18n,
-      vuetify,
-    }).$mount("#exit-screen");
+// init exit screen
+export function initExitScreen(exoi18n) {
+  return exoi18n.loadLanguageAsync(lang, langUrl).then(i18n => {
+    return new Promise((resolve) => {
+      new window.Vue({
+        el: "#exit-screen",
+        components: { ExitScreen },
+        vuetify,
+        i18n,
+        render: h => h(ExitScreen),
+      });
+    });
   });
 }

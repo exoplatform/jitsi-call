@@ -2,8 +2,9 @@ require([
   "SHARED/jquery",
   "SHARED/webConferencing",
   "SHARED/webConferencing_jitsi",
+  "SHARED/eXoVueI18n",
   "app",
-], function($, webConferencing, provider, app) {
+], function($, webConferencing, provider, exoi18n, app) {
 
   /** For debug logging. */
   const log = webConferencing.getLog("jitsi").prefix("call");
@@ -235,7 +236,7 @@ require([
         if (!window.closed) {
           // If not already closed we show the exit message to the user
           console.log('[Jitsi] error: Scripts may not close windows that were not opened by script.');
-          app.initExitScreen();
+          app.initExitScreen(exoi18n);
         }
       }, 250);
       window.close();
@@ -346,7 +347,7 @@ require([
         api.addEventListener("participantRoleChanged", event => {
           provider.getInviteLink(call).then((inviteLink) => {
             if (!isGuest) {
-              app.initCallLink(inviteLink);
+              app.initCallLink(inviteLink, exoi18n);
             }
           });
           api.executeCommand("displayName", name);
@@ -400,7 +401,7 @@ require([
         if (isGuest) {
           log.debug("Cannot get user info for call invitation: " + callId + " (" + inviteId + "), treating the user as a guest", err);
           // Show signIn page: get firstName and lastName
-          app.initSignInScreen(hideLoader, showLoader).then(() => {
+          app.initSignInScreen(hideLoader, showLoader, exoi18n).then(() => {
             showSignInPage(callId, inviteId);
           }).catch(guestData => {
             var guestInfo = {};
@@ -503,5 +504,5 @@ require([
   };
 
   const meetApp = new MeetApp();
-  meetApp.init();
+  meetApp.init(exoi18n);
 });

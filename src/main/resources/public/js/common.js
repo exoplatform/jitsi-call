@@ -9,12 +9,11 @@ var require = {
   waitSeconds : 60,
   paths : {
     "call" : "../../../jitsi/js/call",
-    "app" : "../../../jitsi/jitsi/js/jitsi-app.bundle"
+    "app" : "../../../jitsi/jitsi/js/jitsi-app.bundle",
+    "SHARED/eXoVueI18n" : "/portal/scripts/" + resorcesVersion + "/SHARED/eXoVueI18n"
   }
 };
 
 var bootstrap = document.createElement('script');
 bootstrap.setAttribute('src', require.baseUrl + "/SHARED/bootstrap.js");
 document.head.append(bootstrap);
-
-
