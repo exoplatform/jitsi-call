@@ -117,7 +117,8 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>3.3.4</version>
+        <!-- Keep aligned with spring-boot-dependencies.version of io.meeds:maven-depmgt-pom (the BOM manages no plugin) -->
+        <version>4.1.1</version>
         <configuration>
           <directories>
             <directory>${project.build.directory}/frontend</directory>

@@ -78,7 +78,7 @@ public class TokenAuthenticationFilter implements Filter {
    */
   private boolean verifyToken(String token) {
     try {
-      Jws<Claims> jws = Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).parseClaimsJws(token);
+      Jws<Claims> jws = Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token);
       String action = String.valueOf(jws.getBody().get("action"));
       if (EXTERNAL_AUTH.equals(action)) {
         return true;

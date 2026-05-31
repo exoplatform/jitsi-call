@@ -1,6 +1,5 @@
 package org.exoplatform.jitsi;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -9,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Base64;
 
 @SpringBootTest(classes = { TokenService.class })
 public class TokenServiceTest {
@@ -25,7 +26,8 @@ public class TokenServiceTest {
     String[] split_string = token.split("\\.");
     String base64EncodedHeader = split_string[0];
 
-    Base64 base64Url = new Base64(true);
+    // JWT segments are unpadded base64url: the JDK URL decoder accepts them without any extra dependency
+    Base64.Decoder base64Url = Base64.getUrlDecoder();
     String header = new String(base64Url.decode(base64EncodedHeader));
 
     JSONObject json = new JSONObject(header);
