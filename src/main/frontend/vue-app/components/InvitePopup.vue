@@ -1,6 +1,7 @@
 <template>
   <div
     id="invite-popup"
+    :class="{ copied: copied }"
     class="invite-copy-link">
     <input
       id="inputURL"
@@ -14,19 +15,44 @@
       :title="hoverMsg"
       :aria-label="hoverMsg"
       type="button"
-      @click="displayMessage">
+      @click="copyLink">
+      <!--
+        The icons are drawn inline on purpose: this button is moved inside the Jitsi
+        iframe, where the platform icon fonts (FontAwesome / MDI) are not loaded,
+        so any font based icon renders as an empty box. Both icons are always
+        rendered and swapped with CSS, to avoid patching the DOM of another
+        document each time the copied state changes.
+      -->
       <svg
+        class="invite-copy-link__copy"
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
         focusable="false">
         <path d="M19 21H8V7h11v14zm0-16H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zM16 1H4a2 2 0 0 0-2 2v14h2V3h12V1z" />
       </svg>
+      <svg
+        class="invite-copy-link__done"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        focusable="false">
+        <path d="M21 7L9 19l-5.5-5.5 1.41-1.41L9 16.17 19.59 5.59 21 7z" />
+      </svg>
     </button>
+    <span
+      class="invite-copy-link__feedback"
+      role="status">{{ textLink }}</span>
   </div>
 </template>
 
 <script>
+/** Id of the stylesheet injected in the Jitsi iframe, to inject it only once. */
+const COPY_LINK_STYLE_ID = "invite-popup-style";
+
+/** How long the copy confirmation stays displayed, in ms. */
+const COPIED_FEEDBACK_DELAY = 3000;
+
 // Styles of the copy link button, injected in the Jitsi iframe document since the
 // button is moved there and stylesheets of the parent document do not apply to it.
 const COPY_LINK_STYLE = `
@@ -76,6 +102,30 @@ const COPY_LINK_STYLE = `
     fill: currentColor;
     pointer-events: none;
   }
+  #invite-popup .invite-copy-link__copy {
+    display: block;
+  }
+  #invite-popup .invite-copy-link__done,
+  #invite-popup .invite-copy-link__feedback {
+    display: none;
+  }
+  #invite-popup.copied .invite-copy-link__copy {
+    display: none;
+  }
+  #invite-popup.copied .invite-copy-link__done {
+    display: block;
+  }
+  #invite-popup.copied .invite-copy-link__feedback {
+    display: inline-block;
+  }
+  #invite-popup .invite-copy-link__feedback {
+    margin-right: 8px;
+    color: #fff;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1;
+    white-space: nowrap;
+  }
 `;
 
 export default {
@@ -91,14 +141,9 @@ export default {
     return {
       textLink: "Link copied to clipboard",
       hoverMsg: "Copy meeting link to copyboard",
-      type:"",
+      copied: false,
+      copiedTimeout: null,
     };
-  },
-
-  computed: {
-    textLinkMsg(){
-      return this.textLink;
-    }
   },
 
   mounted(){
@@ -108,19 +153,59 @@ export default {
     if (!elementAutoHide || !elementAutoHide.firstChild) {
       return;
     }
-    const style = frameDocument.createElement("style");
-    style.type = "text/css";
-    style.textContent = COPY_LINK_STYLE;
-    frameDocument.getElementsByTagName("HEAD")[0].appendChild(style);
+    if (!frameDocument.getElementById(COPY_LINK_STYLE_ID)) {
+      const style = frameDocument.createElement("style");
+      style.id = COPY_LINK_STYLE_ID;
+      style.type = "text/css";
+      style.textContent = COPY_LINK_STYLE;
+      frameDocument.getElementsByTagName("HEAD")[0].appendChild(style);
+    }
+    // initCallLink() is called on every role change, so this component is mounted
+    // several times for a single call: replace the button injected by a previous
+    // instance instead of adding a second one to the Jitsi header.
+    const previous = frameDocument.getElementById("invite-popup");
+    if (previous && previous !== this.$el) {
+      previous.remove();
+    }
+    // moving the button next to the room name, in the Jitsi header
     elementAutoHide.firstChild.prepend(this.$el);
   },
 
+  beforeDestroy() {
+    if (this.copiedTimeout) {
+      clearTimeout(this.copiedTimeout);
+    }
+  },
+
   methods: {
-    displayMessage() {
-      this.$root.$emit("alert-message", this.textLinkMsg, "success");
+    copyLink() {
+      // The button lives in the Jitsi iframe, which covers the whole call page, so
+      // the confirmation is displayed here: a toast rendered in the parent document
+      // would be hidden behind the iframe.
+      this.showCopiedFeedback();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(this.url).catch(() => this.copyWithSelection());
+      } else {
+        this.copyWithSelection();
+      }
+    },
+
+    copyWithSelection() {
       const input = this.$refs.copyinput;
       input.select();
+      // the input has been moved in the iframe, so the copy is done on its own document
       input.ownerDocument.execCommand("copy");
+    },
+
+    showCopiedFeedback() {
+      this.copied = true;
+      if (this.copiedTimeout) {
+        clearTimeout(this.copiedTimeout);
+      }
+      this.copiedTimeout = setTimeout(() => {
+        this.copied = false;
+        this.copiedTimeout = null;
+      }, COPIED_FEEDBACK_DELAY);
     }
   }
 };
