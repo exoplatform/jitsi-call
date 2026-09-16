@@ -293,6 +293,7 @@ require([
           configOverwrite: {
             subject: roomTitle,
             prejoinPageEnabled: true,
+            defaultLogoUrl: "/jitsicall/images/logo.png",
             //requireDisplayName: true,
             //enableWelcomePage: true,
             //enableClosePage: true,
