@@ -99,7 +99,9 @@ require([
     var beforeunloadListener = function() {
       if (callId && !isStopped) {
         isStopping = true;
-        leaveCall();
+        if (!callSubscription) {
+          webConferencing.updateCall(callId, "leaved");
+        }
       }
       if (api) {
         closeInviteLink();
@@ -260,25 +262,13 @@ require([
     };
 
     var subscribeCall = function() {
-      // Subscribed to its call, this window leaves it by unsubscribing: the server leaves the call from this window
-      // once, also when its session ends with the leave lost (crash, sleep, network loss)
+      // Subscribed to its call, this window unloaded, reloaded or disconnected leaves it from the server once the
+      // leave grace time passed, the hang up leaving it at once
       var subscription = webConferencing.onCallUpdate(callId, () => {}, err => {
         log.error("Failed to listen on call updates", err);
       }, () => {
         callSubscription = subscription;
       });
-    };
-
-    var leaveCall = function() {
-      if (callSubscription) {
-        var subscription = callSubscription;
-        callSubscription = null;
-        var $left = $.Deferred();
-        subscription.off(() => $left.resolve());
-        return $left.promise();
-      } else {
-        return webConferencing.updateCall(callId, "leaved");
-      }
     };
 
     /**
@@ -363,7 +353,7 @@ require([
         subscribeCall();
         api.on("readyToClose", event => {
           isStopped = true;
-          leaveCall().then(() => {
+          webConferencing.updateCall(callId, "leaved").then(() => {
             closeWindow();
           });
         });
