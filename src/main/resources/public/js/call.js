@@ -258,6 +258,14 @@ require([
       });
     };
 
+    var subscribeCall = function() {
+      // Subscribed to its call, this window leaves it from the server when its session ends, even when its leave
+      // on unload is lost (crash, sleep, network loss)
+      webConferencing.onCallUpdate(callId, () => {}, err => {
+        log.error("Failed to listen on call updates", err);
+      });
+    };
+
     /**
      * Initializes the call
      */
@@ -337,6 +345,7 @@ require([
         api.executeCommand("avatarUrl", avatarLink);
         webConferencing.updateCall(callId, "joined");
         log.info("Joined to the call " + callId + " by " + userinfo.id);
+        subscribeCall();
         api.on("readyToClose", event => {
           isStopped = true;
           webConferencing.updateCall(callId, "leaved").then(() => {
