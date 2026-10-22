@@ -15,6 +15,7 @@ require([
     //var inviteId;
     var authToken;
     var isStopped = false;
+    var callSubscription = null;
     var api;
 
     var getUrlParameter = function(sParam) {
@@ -98,7 +99,7 @@ require([
     var beforeunloadListener = function() {
       if (callId && !isStopped) {
         isStopping = true;
-        webConferencing.updateCall(callId, "leaved");
+        leaveCall();
       }
       if (api) {
         closeInviteLink();
@@ -258,6 +259,28 @@ require([
       });
     };
 
+    var subscribeCall = function() {
+      // Subscribed to its call, this window leaves it by unsubscribing: the server leaves the call from this window
+      // once, also when its session ends with the leave lost (crash, sleep, network loss)
+      var subscription = webConferencing.onCallUpdate(callId, () => {}, err => {
+        log.error("Failed to listen on call updates", err);
+      }, () => {
+        callSubscription = subscription;
+      });
+    };
+
+    var leaveCall = function() {
+      if (callSubscription) {
+        var subscription = callSubscription;
+        callSubscription = null;
+        var $left = $.Deferred();
+        subscription.off(() => $left.resolve());
+        return $left.promise();
+      } else {
+        return webConferencing.updateCall(callId, "leaved");
+      }
+    };
+
     /**
      * Initializes the call
      */
@@ -337,9 +360,10 @@ require([
         api.executeCommand("avatarUrl", avatarLink);
         webConferencing.updateCall(callId, "joined");
         log.info("Joined to the call " + callId + " by " + userinfo.id);
+        subscribeCall();
         api.on("readyToClose", event => {
           isStopped = true;
-          webConferencing.updateCall(callId, "leaved").then(() => {
+          leaveCall().then(() => {
             closeWindow();
           });
         });
