@@ -510,6 +510,11 @@ require([
               });
             });
           });
+        }).catch(err => {
+          // The context is refused (403) to a request that is neither its user's nor a guest's
+          log.error("Cannot get call context: " + callId + " user: " + userinfo.id, err);
+          hideLoader();
+          alert("Error occurred while initializing the call.");
         });
       });
       window.addEventListener("beforeunload", beforeunloadListener);
