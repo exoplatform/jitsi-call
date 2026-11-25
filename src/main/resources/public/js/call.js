@@ -511,8 +511,10 @@ require([
             });
           });
         }).catch(err => {
-          // The context is refused (403) to a request that is neither its user's nor a guest's
-          log.error("Cannot get call context: " + callId + " user: " + userinfo.id, err);
+          // The call context could not be read or the call could not start
+          // with it: refused (403), a network or server failure, or an error
+          // while initializing the call
+          log.error("Cannot initialize the call with its context: " + callId + " user: " + userinfo.id, err);
           hideLoader();
           alert("Error occurred while initializing the call.");
         });
