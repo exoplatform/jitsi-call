@@ -462,7 +462,7 @@ require([
       $initUser.then(function(userinfo, token) {
         authToken = token;
         getContextInfo(userinfo.id).then(contextInfo => {
-          getSettings().then(function(settings) {
+          return getSettings().then(function(settings) {
             // General configuration to reflect the PLF environment  
             eXo.env.portal.profileOwner = userinfo.id;
             webConferencing.init(userinfo, contextInfo);
@@ -511,9 +511,9 @@ require([
             });
           });
         }).catch(err => {
-          // The call context could not be read or the call could not start
-          // with it: refused (403), a network or server failure, or an error
-          // while initializing the call
+          // The call context or the call settings could not be read, or the
+          // call could not be initialized with them: refused (403), a network
+          // or server failure, or an error while initializing the call
           log.error("Cannot initialize the call with its context: " + callId + " user: " + userinfo.id, err);
           hideLoader();
           alert("Error occurred while initializing the call.");
